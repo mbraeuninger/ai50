@@ -84,7 +84,7 @@ def main():
             print(f"{i + 1}: {person1} and {person2} starred in {movie}")
 
 
-def shortest_path(source, target):
+def shortest_path(source, target, algo_type="breadth"):
     """
     Returns the shortest list of (movie_id, person_id) pairs
     that connect the source to the target.
@@ -92,7 +92,18 @@ def shortest_path(source, target):
     If no possible path, returns None.
     """
 
-    # TODO
+    # initialize the frontier with first Node
+    start = Node(state=self.start, parent=None, action=None)
+    if algo_type == "breadth":
+        frontier = QueueFrontier()
+    elif algo_type == "depth":
+        frontier = StackFrontier()
+    else:
+        print("Unknonwn algorithm type. Please use 'breadth' or 'depth' algorithm.")
+        raise Exception
+    frontier.add(start)
+
+
     raise NotImplementedError
 
 
