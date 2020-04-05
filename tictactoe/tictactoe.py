@@ -31,6 +31,13 @@ def actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
+    actions = set()
+    for row in enumerate(board):
+        if EMPTY in row[1]:
+            for field in enumerate(row):
+                if field[1] == EMPTY:
+                    actions.add((row[0],field[0]))
+    return actions
     raise NotImplementedError
 
 
