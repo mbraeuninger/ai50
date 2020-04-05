@@ -13,7 +13,7 @@ people = {}
 movies = {}
 
 
-def load_data(directory):
+def load_data(directory="small"):
     """
     Load data from CSV files into memory.
     """
@@ -110,7 +110,6 @@ def shortest_path(source, target, algo_type="breadth"):
 
         # Choose a node from the frontier
         node = frontier.remove()
-        num_explored += 1
 
         # If node is the goal, then we have a solution
         if node.state == target:
