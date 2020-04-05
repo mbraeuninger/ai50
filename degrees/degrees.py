@@ -68,8 +68,11 @@ def main():
     target = person_id_for_name(input("Name: "))
     if target is None:
         sys.exit("Person not found.")
+    algo_type = input("Algorithm type: ")
+    if algo_type not in ["breadth", "depth"]:
+        sys.exit("Algorithm type unknown. Please use 'breadth' or 'depth'.")
 
-    path = shortest_path(source, target)
+    path = shortest_path(source, target, algo_type)
 
     if path is None:
         print("Not connected.")
@@ -85,7 +88,7 @@ def main():
             print(f"{i + 1}: {person1} and {person2} starred in {movie}")
 
 
-def shortest_path(source, target, algo_type="breadth"):
+def shortest_path(source, target, algo_type):
     """
     Returns the shortest list of (movie_id, person_id) pairs
     that connect the source to the target.
