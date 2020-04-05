@@ -79,7 +79,6 @@ def main():
     else:
         degrees = len(path)
         print(f"{degrees} degrees of separation.")
-        print(f"PATH: {path}")
         path = [(None, source)] + path
         for i in range(degrees):
             person1 = people[path[i][1]]["name"]
