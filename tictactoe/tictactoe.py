@@ -22,6 +22,8 @@ def player(board):
     """
     Returns player who has the next turn on a board.
     """
+    list_board = [field for row in board for field in row]
+    return X if list_board.count(EMPTY) % 2 == 0 else O
     raise NotImplementedError
 
 
