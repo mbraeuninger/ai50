@@ -60,19 +60,24 @@ def winner(board):
     """
     Returns the winner of the game, if there is one.
     """
-    # check if row is identical
+    # check rows for winner
     for row in board:
         if len(set(row)) == 1:
             return X if X in row else O
-    # check if column is identical
+    # check columns
     for n in range(0,3):
         col = [row[n] for row in board]
         if len(set(col)) == 1:
             return X if X in row else O
-    # check if diagonal is identical
-     d1 = [board[el][el] for el in range(0,3)]
+    # check first diagonal for winner
+    d1 = [board[el][el] for el in range(0,3)]
     if len(set(d1)) == 1:
         return X if X in d1 else O
+    # check second diagonal for winner
+    temp_board = board.reverse()
+    d2 = [temp_board[el][el] for el in range(0,3)]
+    if len(set(d2)) == 1:
+        return X if X in d2 else O
     raise NotImplementedError
 
 
