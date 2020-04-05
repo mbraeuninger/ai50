@@ -79,7 +79,6 @@ def winner(board):
     d2 = [temp_board[el][el] for el in range(0,3)]
     if len(set(d2)) == 1:
         return X if X in d2 else O
-    raise NotImplementedError
 
 
 def terminal(board):
@@ -90,7 +89,6 @@ def terminal(board):
         return False
     else:
         return True
-    raise NotImplementedError
 
 
 def utility(board):
@@ -104,11 +102,13 @@ def utility(board):
             return -1
         else:
             return 0
-    raise NotImplementedError
 
 
 def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
-    raise NotImplementedError
+    if terminal(board) == False:
+        None
+    else:
+        return None
