@@ -4,6 +4,7 @@ Tic Tac Toe Player
 
 import math
 import copy
+from itertools import chain
 
 X = "X"
 O = "O"
@@ -85,6 +86,10 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
+    if EMPTY in list(chain(board)):
+        return False
+    else:
+        return True
     raise NotImplementedError
 
 
