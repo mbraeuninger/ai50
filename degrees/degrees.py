@@ -13,7 +13,7 @@ people = {}
 movies = {}
 
 
-def load_data(directory="small"):
+def load_data(directory="large"):
     """
     Load data from CSV files into memory.
     """
@@ -76,6 +76,7 @@ def main():
     else:
         degrees = len(path)
         print(f"{degrees} degrees of separation.")
+        print(f"PATH: {path}")
         path = [(None, source)] + path
         for i in range(degrees):
             person1 = people[path[i][1]]["name"]
@@ -108,34 +109,39 @@ def shortest_path(source, target, algo_type="breadth"):
 
     while True:
 
+        # If nothing left, then no solution possible
+        if frontier.empty():
+            raise Exception("no solution")
+
         # Choose a node from the frontier
         node = frontier.remove()
 
         # If node is the goal, then we have a solution
         if node.state == target:
-            list_actions = []
-            list_movies = []
+            actions = []
+            actors = []
             while node.parent is not None:
-                list_actions.append(node.action)
-                list_movies.append(node.state)
+                actions.append(node.action)
+                actors.append(node.state)
                 node = node.parent
-            list_actions.reverse()
-            list_movies.reverse()
-            solution = (list_actions, list_movies)
+            actions.reverse()
+            actors.reverse()
+            solution = list(zip(actions, actors))
             return solution
 
         # Mark node as explored
         explored.add(node.state)
 
         # find all neighbors of next node
-        person_id = person_id_for_name(node.state)
-        neighbors = neighbors_for_person(person_id)
+        neighbors = neighbors_for_person(node.state)
         # Add neighbors to frontier
         for pair in neighbors:
+            movie_id = pair[0]
+            person_id = pair[1]
             movie = movies[pair[0]]["title"]
             person = people[pair[1]]["name"]
-            if not frontier.contains_state(person) and person not in explored:
-                child = Node(state=person, parent=node, action=movie)
+            if not frontier.contains_state(person_id) and person_id not in explored:
+                child = Node(state=person_id, parent=node, action=movie_id)
                 frontier.add(child)
 
 
