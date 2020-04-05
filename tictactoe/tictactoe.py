@@ -51,7 +51,11 @@ def result(board, action):
     # get the player whose turn it is
     player = player(board)
     # change the field that is being played
-    board[action[0]][action[1]] = player
+    if board[action[0]][action[1]] == EMPTY:
+        board[action[0]][action[1]] = player
+    else:
+        print("Invalid move")
+        raise Exception
     return board
     raise NotImplementedError
 
