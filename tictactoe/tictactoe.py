@@ -60,6 +60,16 @@ def winner(board):
     """
     Returns the winner of the game, if there is one.
     """
+    # check if row is identical
+    for row in board:
+        if len(set(row)) == 1:
+            return X if X in row else O
+    # check if column is identical
+    for n in range(0,3):
+        col = [row[n] for row in board]
+        if len(set(col)) == 1:
+            return X if X in row else O
+    # check if diagonal is identical
     raise NotImplementedError
 
 
