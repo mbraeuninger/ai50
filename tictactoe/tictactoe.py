@@ -25,7 +25,6 @@ def player(board):
     """
     list_board = [field for row in board for field in row]
     return X if list_board.count(EMPTY) % 2 != 0 else O
-    raise NotImplementedError
 
 
 def actions(board):
@@ -39,7 +38,6 @@ def actions(board):
                 if field[1] == EMPTY:
                     actions.add((row[0],field[0]))
     return actions
-    raise NotImplementedError
 
 
 def result(board, action):
@@ -54,10 +52,8 @@ def result(board, action):
     if board[action[0]][action[1]] == EMPTY:
         board[action[0]][action[1]] = player
     else:
-        print("Invalid move")
-        raise Exception
+        raise Exception("Invalid move")
     return board
-    raise NotImplementedError
 
 
 def winner(board):
