@@ -70,6 +70,9 @@ def winner(board):
         if len(set(col)) == 1:
             return X if X in row else O
     # check if diagonal is identical
+     d1 = [board[el][el] for el in range(0,3)]
+    if len(set(d1)) == 1:
+        return X if X in d1 else O
     raise NotImplementedError
 
 
