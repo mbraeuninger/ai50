@@ -92,16 +92,52 @@ def shortest_path(source, target, algo_type="breadth"):
     If no possible path, returns None.
     """
 
-    # initialize the frontier with first Node
-    start = Node(state=self.start, parent=None, action=None)
+    # initialize the frontier with first Node and state as source
+    start = Node(state=source, parent=None, action=None)
     if algo_type == "breadth":
         frontier = QueueFrontier()
     elif algo_type == "depth":
         frontier = StackFrontier()
     else:
-        print("Unknonwn algorithm type. Please use 'breadth' or 'depth' algorithm.")
+        print("Unknown algorithm type. Please use 'breadth' or 'depth' algorithm.")
         raise Exception
     frontier.add(start)
+
+    # create empty set to store explored Nodes in
+    explored = set()
+
+    while True:
+
+        # Choose a node from the frontier
+        node = frontier.remove()
+        num_explored += 1
+
+        # If node is the goal, then we have a solution
+        if node.state == target:
+            list_actions = []
+            list_movies = []
+            while node.parent is not None:
+                list_actions.append(node.action)
+                list_movies.append(node.state)
+                node = node.parent
+            list_actions.reverse()
+            list_movies.reverse()
+            solution = (list_actions, list_movies)
+            return solution
+
+        # Mark node as explored
+        explored.add(node.state)
+
+        # find all neighbors of next node
+        person_id = person_id_for_name(node.state)
+        neighbors = neighbors_for_person(person_id)
+        # Add neighbors to frontier
+        for pair in neighbors:
+            movie = movies[pair[0]]["title"]
+            person = people[pair[1]]["name"]
+            if not frontier.contains_state(person) and person not in explored:
+                child = Node(state=person, parent=node, action=movie)
+                frontier.add(child)
 
 
     raise NotImplementedError
