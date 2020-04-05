@@ -3,6 +3,7 @@ Tic Tac Toe Player
 """
 
 import math
+import copy
 
 X = "X"
 O = "O"
@@ -33,7 +34,7 @@ def actions(board):
     """
     actions = set()
     for row in enumerate(board):
-        if EMPTY in row[1]:
+        if EMPTY in row[1]:  # if there are no EMPTY values left we can skip
             for field in enumerate(row):
                 if field[1] == EMPTY:
                     actions.add((row[0],field[0]))
@@ -45,6 +46,13 @@ def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
+    # create a deepcopy of the board
+    copy.deepcopy(board)
+    # get the player whose turn it is
+    player = player(board)
+    # change the field that is being played
+    board[action[0]][action[1]] = player
+    return board
     raise NotImplementedError
 
 
