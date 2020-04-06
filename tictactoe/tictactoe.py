@@ -108,7 +108,27 @@ def minimax(board):
     """
     Returns the optimal action for the current player on the board.
     """
-    if terminal(board) == False:
-        None
-    else:
+    # whose turn is it
+    player = player(board)
+    # check if game is over
+    if terminal(board):
+        # if game is over return None
         return None
+    else:
+    # find next possible moves
+        actions = actions(board)
+        # apply moves in list
+        list_actions_results = [(action, result(board, action)) for action in actions]
+        # is game over?
+        if terminal(list_actions_results[0][1]):
+            # find action with desired result and return it
+            if player == X:
+                best_val = [utility(pair[1]) for pair in list_actions_results].max()
+            else:
+                best_val = [utility(pair[1]) for pair in list_actions_results].min()
+            # return first action with best value
+            for pair in list_actions_results:
+                if pair[1] == best_val:
+                    return pair[0]
+        else:
+            return [minimax(pair[1]) for pair in list_actions_results]
