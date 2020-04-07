@@ -35,9 +35,9 @@ def actions(board):
     actions = set()
     for row in enumerate(board):
         if EMPTY in row[1]:  # if there are no EMPTY values left we can skip
-            for field in enumerate(row):
+            for field in enumerate(row[1]):
                 if field[1] == EMPTY:
-                    actions.add((row[0],field[0]))
+                    actions.add((row[0], field[0]))
     return actions
 
 
@@ -46,15 +46,17 @@ def result(board, action):
     Returns the board that results from making move (i, j) on the board.
     """
     # create a deepcopy of the board
-    copy.deepcopy(board)
+    deepcopy_board = copy.deepcopy(board)
     # get the player whose turn it is
     current_player = player(board)
     # change the field that is being played
-    if board[action[0]][action[1]] == EMPTY:
-        board[action[0]][action[1]] = current_player
+    row = action[0]
+    col = action[1]
+    if board[row][col] == EMPTY:
+        board[row][col] = current_player
+        return board
     else:
         raise Exception("Invalid move")
-    return board
 
 
 def winner(board):
@@ -131,7 +133,7 @@ def minimax(board):
 def max_value(board):
     if terminal(board):
         return utility(board)
-    v = -float("inf")
+    v = -math.inf
     for action in actions(board):
         v = max(v, min_value(result(board, action)))
     return v
@@ -140,7 +142,7 @@ def max_value(board):
 def min_value(board):
     if terminal(board):
         return utility(board)
-    v = float("inf")
+    v = math.inf
     for action in actions(board):
         v = min(v, max_value(result(board, action)))
     return v
