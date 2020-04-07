@@ -85,7 +85,9 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    if EMPTY in list(chain(board)):
+    # flat_list = [item for sublist in l for item in sublist]
+    board = [field for row in board for field in row]
+    if EMPTY in board:
         return False
     else:
         return True
@@ -113,7 +115,7 @@ def minimax(board):
     else:
         player = player(board)
         actions = actions(board)
-        action_results = [(action, result(board, action))for action in actions]
+        action_results = [(action, result(board, action)) for action in actions]
         if player == X:
             v = max_value(board)
             for pair in action_results:
