@@ -48,10 +48,10 @@ def result(board, action):
     # create a deepcopy of the board
     copy.deepcopy(board)
     # get the player whose turn it is
-    player = player(board)
+    current_player = player(board)
     # change the field that is being played
     if board[action[0]][action[1]] == EMPTY:
-        board[action[0]][action[1]] = player
+        board[action[0]][action[1]] = current_player
     else:
         raise Exception("Invalid move")
     return board
@@ -113,15 +113,14 @@ def minimax(board):
     if terminal(board):
         return None
     else:
-        player = player(board)
-        actions = actions(board)
-        action_results = [(action, result(board, action)) for action in actions]
-        if player == X:
+        current_player = player(board)
+        next_actions = actions(board)
+        action_results = [(action, result(board, action)) for action in next_actions]
+        if current_player == X:
             v = max_value(board)
             for pair in action_results:
                 if v == max_value(pair[1]):
                     return pair[0]
-            return action
         else:
             v = min_value(board)
             for pair in action_results:
