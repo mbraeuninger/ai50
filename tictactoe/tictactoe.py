@@ -83,7 +83,7 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    if player(board):
+    if winner(board):
         return True
     else:
         board = [field for row in board for field in row]
