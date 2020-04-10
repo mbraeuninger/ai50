@@ -3,8 +3,6 @@ Tic Tac Toe Player
 """
 
 import math
-import copy
-from itertools import chain
 
 X = "X"
 O = "O"
@@ -45,8 +43,6 @@ def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
-    # create a deepcopy of the board
-    deepcopy_board = copy.deepcopy(board)
     # get the player whose turn it is
     current_player = player(board)
     # change the field that is being played
