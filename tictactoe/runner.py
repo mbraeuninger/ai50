@@ -114,8 +114,11 @@ while True:
             if ai_turn:
                 time.sleep(0.5)
                 deepcopy_board = copy.deepcopy(board)
+                print(f"Start Minimax with {user}")
                 move = ttt.minimax(board)
+                print(f"Found move {move}")
                 board = ttt.result(deepcopy_board, move)
+                print(f"New board {board}")
                 ai_turn = False
             else:
                 ai_turn = True

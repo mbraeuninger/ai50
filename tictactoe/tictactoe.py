@@ -61,21 +61,21 @@ def winner(board):
     """
     # check rows for winner
     for row in board:
-        if len(set(row)) == 1:
+        if len(set(row)) == 1 and EMPTY not in row:
             return X if X in row else O
     # check columns
     for n in range(0,3):
         col = [row[n] for row in board]
-        if len(set(col)) == 1:
-            return X if X in row else O
+        if len(set(col)) == 1  and EMPTY not in col:
+            return X if X in col else O
     # check first diagonal for winner
     d1 = [board[el][el] for el in range(0,3)]
-    if len(set(d1)) == 1:
+    if len(set(d1)) == 1 and EMPTY not in d1:
         return X if X in d1 else O
     # check second diagonal for winner
-    temp_board = board.reverse()
-    d2 = [temp_board[el][el] for el in range(0,3)]
-    if len(set(d2)) == 1:
+    board = list(reversed(board))
+    d2 = [board[el][el] for el in range(0,3)]
+    if len(set(d2)) == 1 and EMPTY not in d2:
         return X if X in d2 else O
 
 
@@ -83,12 +83,14 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    # flat_list = [item for sublist in l for item in sublist]
-    board = [field for row in board for field in row]
-    if EMPTY in board:
-        return False
-    else:
+    if player(board):
         return True
+    else:
+        board = [field for row in board for field in row]
+        if EMPTY in board:
+            return False
+        else:
+            return True
 
 
 def utility(board):
@@ -128,7 +130,7 @@ def minimax(board):
 
 def max_value(board):
     if terminal(board):
-        return utility(board)
+        v = utility(board)
     v = -math.inf
     for action in actions(board):
         v = max(v, min_value(result(board, action)))
@@ -137,7 +139,7 @@ def max_value(board):
 
 def min_value(board):
     if terminal(board):
-        return utility(board)
+        v = utility(board)
     v = math.inf
     for action in actions(board):
         v = min(v, max_value(result(board, action)))
