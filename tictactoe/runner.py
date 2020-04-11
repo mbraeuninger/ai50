@@ -1,7 +1,6 @@
 import pygame
 import sys
 import time
-import copy
 
 import tictactoe as ttt
 
@@ -113,12 +112,8 @@ while True:
         if user != player and not game_over:
             if ai_turn:
                 time.sleep(0.5)
-                deepcopy_board = copy.deepcopy(board)
-                print(f"Start Minimax with {board} and user {user} and player {player}")
                 move = ttt.minimax(board)
-                print(f"Found move {move}")
-                board = ttt.result(deepcopy_board, move)
-                print(f"New board {board}")
+                board = ttt.result(board, move)
                 ai_turn = False
             else:
                 ai_turn = True
