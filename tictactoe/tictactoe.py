@@ -47,14 +47,15 @@ def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
-    # get the player whose turn it is
+    # get current player
     current_player = player(board)
+    deepcopy_board = copy.deepcopy(board)
     # change the field that is being played
     row = action[0]
     col = action[1]
-    if board[row][col] == EMPTY:
-        board[row][col] = current_player
-        return board
+    if deepcopy_board[row][col] == EMPTY:
+        deepcopy_board[row][col] = current_player
+        return deepcopy_board
     else:
         raise Exception("Invalid move")
 
