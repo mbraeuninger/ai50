@@ -135,30 +135,20 @@ def minimax(board):
 
 
 def max_value(board):
-    print(f"MAX_VALUE INIT")
     if terminal(board):
-        print(f"BOARD IS TERMINAL WITH RESULT {terminal(board)}")
         return utility(board)
     temp_board = copy.deepcopy(board)
     v = -math.inf
-    print(f"MaxValue started with {board}")
-    print(f"Possible actions are {actions(board)}")
     for action in actions(temp_board):
-        print(f"TRY NOW: {action} in {board} as {player(board)}")
         v = max(v, min_value(result(temp_board, action)))
     return v
 
 
 def min_value(board):
-    print(f"MIN_VALUE INIT")
     if terminal(board):
-        print(f"BOARD IS TERMINAL WITH RESULT {terminal(board)}")
         return utility(board)
     temp_board = copy.deepcopy(board)
     v = math.inf
-    print(f"MinValue started with {board}")
-    print(f"Possible actions are {actions(board)}")
     for action in actions(temp_board):
-        print(f"TRY NOW: {action} in {board} as {player(board)}")
         v = min(v, max_value(result(temp_board, action)))
     return v
