@@ -113,7 +113,8 @@ def shortest_path(source, target, algo_type):
 
         # If nothing left, then no solution possible
         if frontier.empty():
-            raise Exception("no solution")
+            print("No path found")
+            return None
 
         # Choose a node from the frontier
         node = frontier.remove()
