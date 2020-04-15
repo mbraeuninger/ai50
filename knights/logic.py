@@ -1,8 +1,7 @@
 import itertools
 
 
-class Sentence():
-
+class Sentence:
     def evaluate(self, model):
         """Evaluates the logical sentence."""
         raise Exception("nothing to evaluate")
@@ -23,6 +22,7 @@ class Sentence():
     @classmethod
     def parenthesize(cls, s):
         """Parenthesizes an expression if not already parenthesized."""
+
         def balanced(s):
             """Checks if a string has balanced parentheses."""
             count = 0
@@ -34,8 +34,11 @@ class Sentence():
                         return False
                     count -= 1
             return count == 0
-        if not len(s) or s.isalpha() or (
-            s[0] == "(" and s[-1] == ")" and balanced(s[1:-1])
+
+        if (
+            not len(s)
+            or s.isalpha()
+            or (s[0] == "(" and s[-1] == ")" and balanced(s[1:-1]))
         ):
             return s
         else:
@@ -43,7 +46,6 @@ class Sentence():
 
 
 class Symbol(Sentence):
-
     def __init__(self, name):
         self.name = name
 
@@ -103,14 +105,10 @@ class And(Sentence):
         return isinstance(other, And) and self.conjuncts == other.conjuncts
 
     def __hash__(self):
-        return hash(
-            ("and", tuple(hash(conjunct) for conjunct in self.conjuncts))
-        )
+        return hash(("and", tuple(hash(conjunct) for conjunct in self.conjuncts)))
 
     def __repr__(self):
-        conjunctions = ", ".join(
-            [str(conjunct) for conjunct in self.conjuncts]
-        )
+        conjunctions = ", ".join([str(conjunct) for conjunct in self.conjuncts])
         return f"And({conjunctions})"
 
     def add(self, conjunct):
@@ -123,8 +121,9 @@ class And(Sentence):
     def formula(self):
         if len(self.conjuncts) == 1:
             return self.conjuncts[0].formula()
-        return " ∧ ".join([Sentence.parenthesize(conjunct.formula())
-                           for conjunct in self.conjuncts])
+        return " ∧ ".join(
+            [Sentence.parenthesize(conjunct.formula()) for conjunct in self.conjuncts]
+        )
 
     def symbols(self):
         return set.union(*[conjunct.symbols() for conjunct in self.conjuncts])
@@ -140,9 +139,7 @@ class Or(Sentence):
         return isinstance(other, Or) and self.disjuncts == other.disjuncts
 
     def __hash__(self):
-        return hash(
-            ("or", tuple(hash(disjunct) for disjunct in self.disjuncts))
-        )
+        return hash(("or", tuple(hash(disjunct) for disjunct in self.disjuncts)))
 
     def __repr__(self):
         disjuncts = ", ".join([str(disjunct) for disjunct in self.disjuncts])
@@ -154,8 +151,9 @@ class Or(Sentence):
     def formula(self):
         if len(self.disjuncts) == 1:
             return self.disjuncts[0].formula()
-        return " ∨  ".join([Sentence.parenthesize(disjunct.formula())
-                            for disjunct in self.disjuncts])
+        return " ∨  ".join(
+            [Sentence.parenthesize(disjunct.formula()) for disjunct in self.disjuncts]
+        )
 
     def symbols(self):
         return set.union(*[disjunct.symbols() for disjunct in self.disjuncts])
@@ -169,9 +167,11 @@ class Implication(Sentence):
         self.consequent = consequent
 
     def __eq__(self, other):
-        return (isinstance(other, Implication)
-                and self.antecedent == other.antecedent
-                and self.consequent == other.consequent)
+        return (
+            isinstance(other, Implication)
+            and self.antecedent == other.antecedent
+            and self.consequent == other.consequent
+        )
 
     def __hash__(self):
         return hash(("implies", hash(self.antecedent), hash(self.consequent)))
@@ -180,8 +180,7 @@ class Implication(Sentence):
         return f"Implication({self.antecedent}, {self.consequent})"
 
     def evaluate(self, model):
-        return ((not self.antecedent.evaluate(model))
-                or self.consequent.evaluate(model))
+        return (not self.antecedent.evaluate(model)) or self.consequent.evaluate(model)
 
     def formula(self):
         antecedent = Sentence.parenthesize(self.antecedent.formula())
@@ -200,9 +199,11 @@ class Biconditional(Sentence):
         self.right = right
 
     def __eq__(self, other):
-        return (isinstance(other, Biconditional)
-                and self.left == other.left
-                and self.right == other.right)
+        return (
+            isinstance(other, Biconditional)
+            and self.left == other.left
+            and self.right == other.right
+        )
 
     def __hash__(self):
         return hash(("biconditional", hash(self.left), hash(self.right)))
@@ -211,10 +212,9 @@ class Biconditional(Sentence):
         return f"Biconditional({self.left}, {self.right})"
 
     def evaluate(self, model):
-        return ((self.left.evaluate(model)
-                 and self.right.evaluate(model))
-                or (not self.left.evaluate(model)
-                    and not self.right.evaluate(model)))
+        return (self.left.evaluate(model) and self.right.evaluate(model)) or (
+            not self.left.evaluate(model) and not self.right.evaluate(model)
+        )
 
     def formula(self):
         left = Sentence.parenthesize(str(self.left))
@@ -253,8 +253,9 @@ def model_check(knowledge, query):
             model_false[p] = False
 
             # Ensure entailment holds in both models
-            return (check_all(knowledge, query, remaining, model_true) and
-                    check_all(knowledge, query, remaining, model_false))
+            return check_all(knowledge, query, remaining, model_true) and check_all(
+                knowledge, query, remaining, model_false
+            )
 
     # Get all symbols in both knowledge and query
     symbols = set.union(knowledge.symbols(), query.symbols())
