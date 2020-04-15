@@ -26,15 +26,23 @@ knowledge1 = And(
         And(Or(BKnight, BKnave), Not(And(BKnight, BKnave))),
         Not(And(CKnight, CKnave)),
     ),
-    Implication(AKnight,And(AKnave,BKnave)),
-    Implication(AKnave,And(Or(AKnave,BKnave),Not(And(AKnave,BKnave))))
+    Implication(AKnight, And(AKnave, BKnave)),
+    Implication(AKnave, And(Or(AKnave, BKnave), Not(And(AKnave, BKnave)))),
 )
 
 # Puzzle 2
 # A says "We are the same kind."
 # B says "We are of different kinds."
 knowledge2 = And(
-    # TODO
+    And(
+        And(Or(AKnight, AKnave), Not(And(AKnight, AKnave))),
+        And(Or(BKnight, BKnave), Not(And(BKnight, BKnave))),
+        Not(And(CKnight, CKnave)),
+    ),
+    Implication(AKnight, Or(And(AKnight, BKnight), And(AKnave, BKnave))),
+    Implication(AKnave, Or(And(AKnight, BKnave), And(AKnave, BKnight))),
+    Implication(BKnight, Or(And(AKnight, BKnave), And(AKnave, BKnight))),
+    Implication(BKnave, Or(And(AKnight, BKnight), And(AKnave, BKnave))),
 )
 
 # Puzzle 3
