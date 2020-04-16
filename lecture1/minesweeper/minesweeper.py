@@ -211,8 +211,12 @@ class MinesweeperAI():
         """
         # ToDo: check if there are safe cells that are not on moves_made: Play one
         # ToDo: else return None
+        for cell in self.safes:
+            if cell not in self.moves_made:
+                return cell
+        return None
 
-        raise NotImplementedError
+        # raise NotImplementedError
 
     def make_random_move(self):
         """
@@ -222,4 +226,9 @@ class MinesweeperAI():
             2) are not known to be mines
         """
         # ToDo: If make_safe_move is None play a random cell that has not been played yet, and is not in known mines
-        raise NotImplementedError
+        if make_safe_move() == None:
+            for cell not in self.moves_made:
+                if cell not in self.mines:
+                    return cell
+
+        # raise NotImplementedError
