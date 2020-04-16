@@ -164,6 +164,16 @@ class MinesweeperAI():
         # List of sentences about the game known to be true
         self.knowledge = []
 
+    def _get_all_cells(self):
+        """
+        Returns: set of all cells
+        """
+        all_cells = set()
+        for i in range(self.height):
+            for j in range(self.width):
+                all_cells.add((i, j))
+        return all_cells
+
     def mark_mine(self, cell):
         """
         Marks a cell as a mine, and updates all knowledge
@@ -197,6 +207,13 @@ class MinesweeperAI():
             5) add any new sentences to the AI's knowledge base
                if they can be inferred from existing knowledge
         """
+        # ToDo: mark cell as moved
+        self.moves_made.add(cell)
+        # ToDo: mark cell as safe
+        self.safes.add(cell)
+        # ToDo: create a new sentence
+        # ToDo: mark additional cells based on new knowledge
+        # ToDo: add new sentence to knowledge base
 
         raise NotImplementedError
 
@@ -227,7 +244,7 @@ class MinesweeperAI():
         """
         # ToDo: If make_safe_move is None play a random cell that has not been played yet, and is not in known mines
         if make_safe_move() == None:
-            for cell not in self.moves_made:
+            for cell in self.moves_made:
                 if cell not in self.mines:
                     return cell
 
