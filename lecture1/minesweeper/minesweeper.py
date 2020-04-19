@@ -2,7 +2,7 @@ import itertools
 import random
 
 
-class Minesweeper():
+class Minesweeper:
     """
     Minesweeper game representation
     """
@@ -84,7 +84,7 @@ class Minesweeper():
         return self.mines_found == self.mines
 
 
-class Sentence():
+class Sentence:
     """
     Logical statement about a Minesweeper game
     A sentence consists of a set of board cells,
@@ -143,7 +143,7 @@ class Sentence():
         # raise NotImplementedError
 
 
-class MinesweeperAI():
+class MinesweeperAI:
     """
     Minesweeper game player
     """
@@ -166,13 +166,29 @@ class MinesweeperAI():
 
     def _get_all_cells(self):
         """
-        Returns: set of all cells
+        Returns a set of all cells on the board
         """
         all_cells = set()
         for i in range(self.height):
             for j in range(self.width):
                 all_cells.add((i, j))
         return all_cells
+
+    def _get_surrounding_cells(self, cell):
+        """
+        Returns a set of all surrounding cells of a cell
+        """
+        # find correct limits for cells
+        border_height_max = min(self.height, cell[0] + 1)
+        border_height_min = max(0, cell[0] - 1)
+        border_width_max = min(self.height, cell[1] + 1)
+        border_width_min = max(0, cell[1] + 1)
+        surr_cells = set()
+        for i in range(border_height_min, border_height_max + 1):
+            for j in range(border_width_min, border_width_max + 1):
+                if (i, j) != cell:
+                    surr_cells.add((i, j))
+        return surr_cells
 
     def mark_mine(self, cell):
         """
