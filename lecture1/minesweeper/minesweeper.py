@@ -175,8 +175,8 @@ class MinesweeperAI:
         # find correct limits for cells
         border_height_max = min(self.height, cell[0] + 1)
         border_height_min = max(0, cell[0] - 1)
-        border_width_max = min(self.height, cell[1] + 1)
-        border_width_min = max(0, cell[1] + 1)
+        border_width_max = min(self.width, cell[1] + 1)
+        border_width_min = max(0, cell[1] - 1)
         surr_cells = set()
         for i in range(border_height_min, border_height_max + 1):
             for j in range(border_width_min, border_width_max + 1):
@@ -217,20 +217,30 @@ class MinesweeperAI:
             5) add any new sentences to the AI's knowledge base
                if they can be inferred from existing knowledge
         """
+        print(f"count is {count}")
+        print(f"cell is {cell}")
         # ToDo: mark cell as moved
         self.moves_made.add(cell)
         # ToDo: mark cell as safe
         self.safes.add(cell)
         # ToDo: create a new sentence
-        cells = self._get_surrounding_cells(cell)
-        sentence = Sentence(cells, count)
+        surr_cells = self._get_surrounding_cells(cell)
+        print(f"surrounding cells are {surr_cells}, with length {len(surr_cells)}")
+        sentence = Sentence(surr_cells, count)
+        print(f"sentence is {sentence}")
         # ToDo: mark additional cells based on new knowledge
         # get mines
-        if count == len(cells):
-            sentence.mark_mine(cells)
+        if count == len(surr_cells):
+            print(f"Count {count} is equal to length {len(surr_cells)}")
+            for surr_cell in surr_cells:
+                sentence.mark_mine(surr_cell)
+                self.mines.add(surr_cell)
         # mark safes
         if count == 0:
-            sentence.mark_safe(cells)
+            print(f"Count {count} is equal to 0")
+            for surr_cell in surr_cells:
+                sentence.mark_safe(surr_cell)
+                self.safes.add(surr_cell)
         # ToDo: add new sentence to knowledge base
         self.knowledge.append(sentence)
 
@@ -243,14 +253,25 @@ class MinesweeperAI:
         This function may use the knowledge in self.mines, self.safes
         and self.moves_made, but should not modify any of those values.
         """
+        print("Start make_safe_move method")
+        print(f"Those are known safes: {self.safes}")
+        print(f"Those are moves made: {self.moves_made}")
         cells = self._get_all_cells()
+        print(f"Found {cells} in _get_all_cells")
         save_moves = []
         for cell in cells:
+            print(f"Try cell {cell}")
             if cell not in self.moves_made and cell in self.safes:
+                print(f"Cell {cell} approved.\n")
                 save_moves.append(cell)
+                print(f"Potential save moves now this: {save_moves}")
+            else:
+                print("Check condition did not apply")
+        print(f"Final list length {len(save_moves)}")
         if len(save_moves) == 0:
             return None
         else:
+            print("Go for random move instead")
             return random.choice(save_moves)
 
     def make_random_move(self):
