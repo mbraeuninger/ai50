@@ -222,7 +222,6 @@ class MinesweeperAI:
         # ToDo: mark cell as safe
         self.safes.add(cell)
         # ToDo: create a new sentence
-        count = Minesweeper.nearby_mines(cell)
         cells = self._get_surrounding_cells(cell)
         sentence = Sentence(cells, count)
         # ToDo: mark additional cells based on new knowledge
@@ -245,10 +244,10 @@ class MinesweeperAI:
         and self.moves_made, but should not modify any of those values.
         """
         cells = self._get_all_cells()
-        save_moves = set()
+        save_moves = []
         for cell in cells:
             if cell not in self.moves_made and cell in self.safes:
-                save_moves.add(cell)
+                save_moves.append(cell)
         if len(save_moves) == 0:
             return None
         else:
@@ -264,10 +263,10 @@ class MinesweeperAI:
         if self.make_safe_move() == None:
             # get all moves
             cells = self._get_all_cells()
-            potential_moves = set()
+            potential_moves = []
             for cell in cells:
                 if cell not in self.moves_made and cell not in self.mines:
-                    potential_moves.add(cell)
+                    potential_moves.append(cell)
             if len(potential_moves) == 0:
                 return None
             else:
