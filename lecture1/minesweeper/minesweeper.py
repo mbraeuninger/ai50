@@ -108,7 +108,6 @@ class Sentence:
         # ToDo: When number of cells = count all are mines
         if self.count == len(self.cells):
             return (cell for cell in self.cells)
-        # raise NotImplementedError
 
     def known_safes(self):
         """
@@ -117,7 +116,6 @@ class Sentence:
         # ToDo: When count in a sentence = 0 then all cells in sentence are safe
         if self.count == 0:
             return (cell for cell in self.cells)
-        # raise NotImplementedError
 
     def mark_mine(self, cell):
         """
@@ -129,8 +127,6 @@ class Sentence:
             self.cells.remove(cell)
             self.count - 1
 
-        # raise NotImplementedError
-
     def mark_safe(self, cell):
         """
         Updates internal knowledge representation given the fact that
@@ -139,8 +135,6 @@ class Sentence:
         # ToDo: If cell is in sentence where cell count > mine count: Remove it
         if cell in self.cells and self.count > 0:
             self.cells.remove(cell)
-
-        # raise NotImplementedError
 
 
 class MinesweeperAI:
@@ -237,11 +231,9 @@ class MinesweeperAI:
             sentence.mark_mine(cells)
         # mark safes
         if count == 0:
-            sentence.mark_safe()
+            sentence.mark_safe(cells)
         # ToDo: add new sentence to knowledge base
         self.knowledge.append(sentence)
-
-        # raise NotImplementedError
 
     def make_safe_move(self):
         """
@@ -262,8 +254,6 @@ class MinesweeperAI:
         else:
             return random.choice(save_moves)
 
-        # raise NotImplementedError
-
     def make_random_move(self):
         """
         Returns a move to make on the Minesweeper board.
@@ -282,6 +272,3 @@ class MinesweeperAI:
                 return None
             else:
                 return random.choice(potential_moves)
-
-
-        # raise NotImplementedError
