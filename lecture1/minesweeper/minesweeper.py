@@ -252,12 +252,15 @@ class MinesweeperAI:
         This function may use the knowledge in self.mines, self.safes
         and self.moves_made, but should not modify any of those values.
         """
-        # ToDo: check if there are safe cells that are not on moves_made: Play one
-        # ToDo: else return None
-        for cell in self.safes:
-            if cell not in self.moves_made:
-                return cell
-        return None
+        cells = self._get_all_cells()
+        save_moves = set()
+        for cell in cells:
+            if cell not in self.moves_made and cell in self.safes:
+                save_moves.add(cell)
+        if len(save_moves) == 0:
+            return None
+        else:
+            return random.choice(save_moves)
 
         # raise NotImplementedError
 
@@ -268,7 +271,6 @@ class MinesweeperAI:
             1) have not already been chosen, and
             2) are not known to be mines
         """
-        # ToDo: If make_safe_move is None play a random cell that has not been played yet, and is not in known mines
         if self.make_safe_move() == None:
             # get all moves
             cells = self._get_all_cells()
