@@ -253,25 +253,14 @@ class MinesweeperAI:
         This function may use the knowledge in self.mines, self.safes
         and self.moves_made, but should not modify any of those values.
         """
-        print("Start make_safe_move method")
-        print(f"Those are known safes: {self.safes}")
-        print(f"Those are moves made: {self.moves_made}")
         cells = self._get_all_cells()
-        print(f"Found {cells} in _get_all_cells")
         save_moves = []
         for cell in cells:
-            print(f"Try cell {cell}")
             if cell not in self.moves_made and cell in self.safes:
-                print(f"Cell {cell} approved.\n")
                 save_moves.append(cell)
-                print(f"Potential save moves now this: {save_moves}")
-            else:
-                print("Check condition did not apply")
-        print(f"Final list length {len(save_moves)}")
         if len(save_moves) == 0:
             return None
         else:
-            print("Go for random move instead")
             return random.choice(save_moves)
 
     def make_random_move(self):
