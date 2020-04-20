@@ -219,30 +219,55 @@ class MinesweeperAI:
         """
         print(f"count is {count}")
         print(f"cell is {cell}")
-        # ToDo: mark cell as moved
         self.moves_made.add(cell)
-        # ToDo: mark cell as safe
         self.safes.add(cell)
-        # ToDo: create a new sentence
         surr_cells = self._get_surrounding_cells(cell)
         print(f"surrounding cells are {surr_cells}, with length {len(surr_cells)}")
-        sentence = Sentence(surr_cells, count)
+        new_sentence = Sentence(surr_cells, count)
         print(f"sentence is {sentence}")
-        # ToDo: mark additional cells based on new knowledge
         # get mines
-        if count == len(surr_cells):
+        # if count == len(surr_cells):
+        if count > 0:
             print(f"Count {count} is equal to length {len(surr_cells)}")
             for surr_cell in surr_cells:
-                sentence.mark_mine(surr_cell)
+                new_sentence.mark_mine(surr_cell)
                 self.mines.add(surr_cell)
         # mark safes
         if count == 0:
             print(f"Count {count} is equal to 0")
             for surr_cell in surr_cells:
-                sentence.mark_safe(surr_cell)
+                new_sentence.mark_safe(surr_cell)
                 self.safes.add(surr_cell)
-        # ToDo: add new sentence to knowledge base
-        self.knowledge.append(sentence)
+                if surr_cell in self.mines:
+                    self.mines.remove(surr_cell)
+
+        self.knowledge.append(new_sentence)
+        print("Knowledge method is done")
+        print(f"Known safes are {self.safes}")
+        print(f"Known mines are {self.mines}")
+
+        # compare information with other sentences
+        for sentence in self.knowledge:
+            if surr_cells.issubset(sentence.cells) and count < sentence.count:
+                temp_cells = sentence.cells - surr_cells
+                temp_count = sentence.count - count
+                temp_sentence = Sentence(temp_cells, temp_count)
+                self.knowledge.append(temp_sentence)
+                if temp_count == 0:
+                    for el in temp_cells:
+                        temp_sentence.mark_safe(el)
+                        self.safes.add(el)
+                        self.mines.remove(el)
+            elif sentence.cells.issubset(surr_cells) and count > sentence.count:
+                temp_cells = surr_cells - sentence.cells
+                temp_count = count - sentence.count
+                temp_sentence = Sentence(temp_cells, temp_count)
+                self.knowledge.append(temp_sentence)
+                if temp_count == 0:
+                    for el in temp_cells:
+                        temp_sentence.mark_safe(el)
+                        self.safes.add(el)
+                        self.mines.remove(el)
 
     def make_safe_move(self):
         """
