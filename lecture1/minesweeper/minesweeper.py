@@ -269,9 +269,17 @@ class MinesweeperAI:
             2) are not known to be mines
         """
         # ToDo: If make_safe_move is None play a random cell that has not been played yet, and is not in known mines
-        if make_safe_move() == None:
-            for cell in self.moves_made:
-                if cell not in self.mines:
-                    return cell
+        if self.make_safe_move() == None:
+            # get all moves
+            cells = self._get_all_cells()
+            potential_moves = set()
+            for cell in cells:
+                if cell not in self.moves_made and cell not in self.mines:
+                    potential_moves.add(cell)
+            if len(potential_moves) == 0:
+                return None
+            else:
+                return random.choice(potential_moves)
+
 
         # raise NotImplementedError
