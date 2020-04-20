@@ -228,10 +228,20 @@ class MinesweeperAI:
         # ToDo: mark cell as safe
         self.safes.add(cell)
         # ToDo: create a new sentence
+        count = Minesweeper.nearby_mines(cell)
+        cells = self._get_surrounding_cells(cell)
+        sentence = Sentence(cells, count)
         # ToDo: mark additional cells based on new knowledge
+        # get mines
+        if count == len(cells):
+            sentence.mark_mine(cells)
+        # mark safes
+        if count == 0:
+            sentence.mark_safe()
         # ToDo: add new sentence to knowledge base
+        self.knowledge.append(sentence)
 
-        raise NotImplementedError
+        # raise NotImplementedError
 
     def make_safe_move(self):
         """
