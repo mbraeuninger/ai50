@@ -338,6 +338,9 @@ class MinesweeperAI:
                 new_sentence.mark_mine(cell)
                 self.safes.remove(cell)
                 self.mines.add(cell)
+
+        # add new sentence to knowledge
+        self.knowledge.append(new_sentence)
         # Todo: We could add recursion here, not sure if it makes sense though
 
 
