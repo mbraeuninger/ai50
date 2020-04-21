@@ -224,13 +224,6 @@ class MinesweeperAI:
         print(f"surrounding cells are {surr_cells}, with length {len(surr_cells)}")
         new_sentence = Sentence(surr_cells, count)
         print(f"sentence is {new_sentence}")
-        # get mines
-        # if count == len(surr_cells):
-        if count == len(surr_cells):
-            print(f"Count {count} is equal to length {len(surr_cells)}")
-            for surr_cell in surr_cells:
-                new_sentence.mark_mine(surr_cell)
-                self.mines.add(surr_cell)
         # mark safes
         if count == 0:
             print(f"Count {count} is equal to 0")
@@ -239,8 +232,23 @@ class MinesweeperAI:
                 self.safes.add(surr_cell)
                 if surr_cell in self.mines:
                     self.mines.remove(surr_cell)
+                    
+        # check for other known safes if there are mines in surrounding cells
+        else:
+            print(f"Count {count} is equal to 0")
+            for surr_cell in surr_cells:
+                if surr_cell in self.safes:
+                    surr_cells.remove(surr_cell)
+        new_sentence = Sentence(surr_cells, count)
 
-        print("Knowledge method Pt. 1 is done.)
+        # get all cells as mines when length is the same
+        if count == len(surr_cells):
+            print(f"Count {count} is equal to length {len(surr_cells)}")
+            for surr_cell in surr_cells:
+                new_sentence.mark_mine(surr_cell)
+                self.mines.add(surr_cell)
+
+        print("Knowledge method Pt. 1 is done.")
         print(f"Known safes are {self.safes}")
         print(f"Known mines are {self.mines}")
         print("Start comparison with other sentences")
@@ -248,46 +256,7 @@ class MinesweeperAI:
         print(f"Print knowledge: {self.knowledge}")
         for sentence in self.knowledge:
             print(f"Comparing current {surr_cells} with {sentence.cells}")
-            if surr_cells == sentence.cells:
-                print("Sentence already exists")
-            elif surr_cells.issubset(sentence.cells) and count < sentence.count:
-                temp_cells = sentence.cells - surr_cells
-                print(f"Temp cells are {temp_cells}")
-                temp_count = sentence.count - count
-                print(f"Temp count is {temp_count}")
-                temp_sentence = Sentence(temp_cells, temp_count)
-                self.knowledge.append(temp_sentence)
-                # add information in case there are no mines
-                if temp_count == 0 and len(temp_cells) > 0:
-                    for el in temp_cells:
-                        temp_sentence.mark_safe(el)
-                        self.safes.add(el)
-                        self.mines.remove(el)
-                # add information in case that mine is known
-                elif temp_count == len(temp_cells) and temp_count > 0:
-                    for el in temp_cells:
-                        temp_sentence.mark_mine(el)
-                        self.mines.add(el)
-                        self.safes.remove(el)
-            elif sentence.cells.issubset(surr_cells) and count > sentence.count:
-                temp_cells = surr_cells - sentence.cells
-                print(f"Temp cells are {temp_cells}")
-                temp_count = count - sentence.count
-                print(f"Temp count is {temp_count}")
-                temp_sentence = Sentence(temp_cells, temp_count)
-                self.knowledge.append(temp_sentence)
-                # add information in case there are no mines
-                if temp_count == 0 and len(temp_cells) > 0:
-                    for el in temp_cells:
-                        temp_sentence.mark_safe(el)
-                        self.safes.add(el)
-                        self.mines.remove(el)
-                # add information in case that mine is known
-                elif temp_count == len(temp_cells) and temp_count > 0:
-                    for el in temp_cells:
-                        temp_sentence.mark_mine(el)
-                        self.mines.add(el)
-                        self.safes.remove(el)
+            self._compare_two_sentences(new_sentence, sentence)
         print("Comparison is done")
         print(f"Known safes are {self.safes}")
         print(f"Known mines are {self.mines}")
@@ -298,6 +267,7 @@ class MinesweeperAI:
         """
         Compares a new sentence with all existing sentences in knowledge base
         """
+        print("start comparison method")
         s1_count = s1.count
         s1_cells = s1.cells
         s2_count = s2.count
@@ -326,14 +296,17 @@ class MinesweeperAI:
         new_count = y_count - x_count
         new_count = new_count if new_count > 0 else 0
         new_sentence = Sentence(new_cells, new_count)
+        print(f"New sentence was generated with cells {new_cells} and length {new_count}")
 
         # check is safety is guaranteed
         if new_count == 0:
+            print("New sentence is safe")
             for cell in new_cells:
                 new_sentence.mark_safe(cell)
                 self.safes.add(cell)
                 self.mines.remove(mine)
         elif new_count == len(new_cells):
+            print("New sentence is conclusive about mines")
             for cell in new_cells:
                 new_sentence.mark_mine(cell)
                 self.safes.remove(cell)
