@@ -1,4 +1,3 @@
-import itertools
 import random
 
 
@@ -224,10 +223,10 @@ class MinesweeperAI:
         surr_cells = self._get_surrounding_cells(cell)
         print(f"surrounding cells are {surr_cells}, with length {len(surr_cells)}")
         new_sentence = Sentence(surr_cells, count)
-        print(f"sentence is {sentence}")
+        print(f"sentence is {new_sentence}")
         # get mines
         # if count == len(surr_cells):
-        if count > 0:
+        if count == len(surr_cells):
             print(f"Count {count} is equal to length {len(surr_cells)}")
             for surr_cell in surr_cells:
                 new_sentence.mark_mine(surr_cell)
@@ -241,33 +240,107 @@ class MinesweeperAI:
                 if surr_cell in self.mines:
                     self.mines.remove(surr_cell)
 
-        self.knowledge.append(new_sentence)
-        print("Knowledge method is done")
+        print("Knowledge method Pt. 1 is done.)
         print(f"Known safes are {self.safes}")
         print(f"Known mines are {self.mines}")
-
+        print("Start comparison with other sentences")
         # compare information with other sentences
+        print(f"Print knowledge: {self.knowledge}")
         for sentence in self.knowledge:
-            if surr_cells.issubset(sentence.cells) and count < sentence.count:
+            print(f"Comparing current {surr_cells} with {sentence.cells}")
+            if surr_cells == sentence.cells:
+                print("Sentence already exists")
+            elif surr_cells.issubset(sentence.cells) and count < sentence.count:
                 temp_cells = sentence.cells - surr_cells
+                print(f"Temp cells are {temp_cells}")
                 temp_count = sentence.count - count
+                print(f"Temp count is {temp_count}")
                 temp_sentence = Sentence(temp_cells, temp_count)
                 self.knowledge.append(temp_sentence)
-                if temp_count == 0:
+                # add information in case there are no mines
+                if temp_count == 0 and len(temp_cells) > 0:
                     for el in temp_cells:
                         temp_sentence.mark_safe(el)
                         self.safes.add(el)
                         self.mines.remove(el)
+                # add information in case that mine is known
+                elif temp_count == len(temp_cells) and temp_count > 0:
+                    for el in temp_cells:
+                        temp_sentence.mark_mine(el)
+                        self.mines.add(el)
+                        self.safes.remove(el)
             elif sentence.cells.issubset(surr_cells) and count > sentence.count:
                 temp_cells = surr_cells - sentence.cells
+                print(f"Temp cells are {temp_cells}")
                 temp_count = count - sentence.count
+                print(f"Temp count is {temp_count}")
                 temp_sentence = Sentence(temp_cells, temp_count)
                 self.knowledge.append(temp_sentence)
-                if temp_count == 0:
+                # add information in case there are no mines
+                if temp_count == 0 and len(temp_cells) > 0:
                     for el in temp_cells:
                         temp_sentence.mark_safe(el)
                         self.safes.add(el)
                         self.mines.remove(el)
+                # add information in case that mine is known
+                elif temp_count == len(temp_cells) and temp_count > 0:
+                    for el in temp_cells:
+                        temp_sentence.mark_mine(el)
+                        self.mines.add(el)
+                        self.safes.remove(el)
+        print("Comparison is done")
+        print(f"Known safes are {self.safes}")
+        print(f"Known mines are {self.mines}")
+        self.knowledge.append(new_sentence)
+        print(f"New sentence added to knowledge base")
+
+    def _compare_two_sentences(self, s1, s2):
+        """
+        Compares a new sentence with all existing sentences in knowledge base
+        """
+        s1_count = s1.count
+        s1_cells = s1.cells
+        s2_count = s2.count
+        s2_cells = s2.cells
+
+        # check if they are the same
+        if s1_cells == s2_cells:
+            return print("Sentences are the same. Abort")
+
+        # assign anonymous variables to facilitate comparison
+        if s1_cells.issubset(s2_cells) and s1_count <= s2_count:
+            x_count = s1_count
+            x_cells = s1_cells
+            y_count = s2_count
+            y_cells = s2_cells
+        elif s2_cells.issubset(s1_cells) and s2_count <= s1_count:
+            x_count = s2_count
+            x_cells = s2_cells
+            y_count = s1_count
+            y_cells = s1_cells
+        else:
+            return print(f"Set 1 {s1_cells} and set 2 {s2_cells} are not related")
+
+        # generate new sentence parameters
+        new_cells = y_cells - x_cells
+        new_count = y_count - x_count
+        new_count = new_count if new_count > 0 else 0
+        new_sentence = Sentence(new_cells, new_count)
+
+        # check is safety is guaranteed
+        if new_count == 0:
+            for cell in new_cells:
+                new_sentence.mark_safe(cell)
+                self.safes.add(cell)
+                self.mines.remove(mine)
+        elif new_count == len(new_cells):
+            for cell in new_cells:
+                new_sentence.mark_mine(cell)
+                self.safes.remove(cell)
+                self.mines.add(cell)
+        # Todo: We could add recursion here, not sure if it makes sense though
+
+
 
     def make_safe_move(self):
         """
