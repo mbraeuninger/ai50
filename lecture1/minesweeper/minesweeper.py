@@ -104,7 +104,6 @@ class Sentence:
         """
         Returns the set of all cells in self.cells known to be mines.
         """
-        # ToDo: When number of cells = count all are mines
         if self.count == len(self.cells):
             return (cell for cell in self.cells)
 
@@ -112,7 +111,6 @@ class Sentence:
         """
         Returns the set of all cells in self.cells known to be safe.
         """
-        # ToDo: When count in a sentence = 0 then all cells in sentence are safe
         if self.count == 0:
             return (cell for cell in self.cells)
 
@@ -121,7 +119,6 @@ class Sentence:
         Updates internal knowledge representation given the fact that
         a cell is known to be a mine.
         """
-        # ToDo: If cell is in sentence, then remove it and reduce number of mines by 1
         if cell in self.cells and self.count > 0:
             self.cells.remove(cell)
             self.count - 1
@@ -131,7 +128,6 @@ class Sentence:
         Updates internal knowledge representation given the fact that
         a cell is known to be safe.
         """
-        # ToDo: If cell is in sentence where cell count > mine count: Remove it
         if cell in self.cells and self.count > 0:
             self.cells.remove(cell)
 
@@ -232,14 +228,15 @@ class MinesweeperAI:
                 self.safes.add(surr_cell)
                 if surr_cell in self.mines:
                     self.mines.remove(surr_cell)
-                    
+
         # check for other known safes if there are mines in surrounding cells
         else:
+            temp_cell_set = set()
             print(f"Count {count} is equal to 0")
             for surr_cell in surr_cells:
                 if surr_cell in self.safes:
-                    surr_cells.remove(surr_cell)
-        new_sentence = Sentence(surr_cells, count)
+                    temp_cell_set.add(surr_cell)
+            new_sentence = Sentence(surr_cells - temp_cell_set, count)
 
         # get all cells as mines when length is the same
         if count == len(surr_cells):
@@ -304,7 +301,7 @@ class MinesweeperAI:
             for cell in new_cells:
                 new_sentence.mark_safe(cell)
                 self.safes.add(cell)
-                self.mines.remove(mine)
+                self.mines.remove(cell)
         elif new_count == len(new_cells):
             print("New sentence is conclusive about mines")
             for cell in new_cells:
