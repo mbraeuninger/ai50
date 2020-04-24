@@ -192,7 +192,6 @@ while True:
                     print("No moves left to make.")
                 else:
                     print("No known safe moves, AI making random move.")
-                    print(f"Random move is {move}")
             else:
                 print("AI making safe move.")
             time.sleep(0.2)
@@ -224,9 +223,6 @@ while True:
         else:
             nearby = game.nearby_mines(move)
             revealed.add(move)
-            print(
-                f"Start adding knowledge with params move  {move} and nearby {nearby}"
-            )
             ai.add_knowledge(move, nearby)
 
     pygame.display.flip()
