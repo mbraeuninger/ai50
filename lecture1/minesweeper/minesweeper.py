@@ -235,7 +235,7 @@ class MinesweeperAI:
 
         # compare information with other sentences
         for sentence in self.knowledge:
-            sentence = self._update_sentence(sentence)
+            self._update_sentence(sentence)
 
     def _update_sentence(self, sentence):
         """
