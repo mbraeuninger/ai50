@@ -216,7 +216,7 @@ class MinesweeperAI:
         self.safes.add(cell)
         surr_cells = self._get_surrounding_cells(cell)
         new_sentence = Sentence(surr_cells, count)
-        # mark safes
+        # mark safes if there are any
         if count == 0:
             for surr_cell in surr_cells:
                 new_sentence.mark_safe(surr_cell)
@@ -224,15 +224,7 @@ class MinesweeperAI:
                 if surr_cell in self.mines:
                     self.mines.remove(surr_cell)
 
-        # check for other known safes if there are mines in surrounding cells
-        else:
-            temp_cell_set = set()
-            for surr_cell in surr_cells:
-                if surr_cell in self.safes:
-                    temp_cell_set.add(surr_cell)
-            new_sentence = Sentence(surr_cells - temp_cell_set, count)
-
-        # get all cells as mines when length is the same
+        # mark mines if there are any
         if count == len(surr_cells):
             for surr_cell in surr_cells:
                 new_sentence.mark_mine(surr_cell)
