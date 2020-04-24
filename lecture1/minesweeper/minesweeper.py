@@ -279,57 +279,6 @@ class MinesweeperAI:
                         self.mines.add(cell)
         return sentence
 
-
-    def _compare_two_sentences(self, s1, s2):
-        """
-        Compares a new sentence with all existing sentences in knowledge base
-        """
-        print("start comparison method")
-        s1_count = s1.count
-        s1_cells = s1.cells
-        s2_count = s2.count
-        s2_cells = s2.cells
-
-        # check if they are the same
-        if s1_cells == s2_cells:
-            return print("Sentences are the same. Abort")
-
-        # assign anonymous variables to facilitate comparison
-        if s1_cells.issubset(s2_cells) and s1_count <= s2_count:
-            x_count = s1_count
-            x_cells = s1_cells
-            y_count = s2_count
-            y_cells = s2_cells
-        elif s2_cells.issubset(s1_cells) and s2_count <= s1_count:
-            x_count = s2_count
-            x_cells = s2_cells
-            y_count = s1_count
-            y_cells = s1_cells
-        else:
-            return print(f"Set 1 {s1_cells} and set 2 {s2_cells} are not related")
-
-        # generate new sentence parameters
-        new_cells = y_cells - x_cells
-        new_count = y_count - x_count
-        new_count = new_count if new_count > 0 else 0
-        new_sentence = Sentence(new_cells, new_count)
-        print(f"New sentence was generated with cells {new_cells} and length {new_count}")
-
-        # check is safety is guaranteed
-        if new_count == 0:
-            print("New sentence is safe")
-            for cell in new_cells:
-                new_sentence.mark_safe(cell)
-                self.safes.add(cell)
-        elif new_count == len(new_cells):
-            print("New sentence is conclusive about mines")
-            for cell in new_cells:
-                new_sentence.mark_mine(cell)
-                self.mines.add(cell)
-
-        # add new sentence to knowledge
-        self.knowledge.append(new_sentence)
-
     def make_safe_move(self):
         """
         Returns a safe cell to choose on the Minesweeper board.
