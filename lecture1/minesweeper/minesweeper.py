@@ -217,12 +217,10 @@ class MinesweeperAI:
         self.moves_made.add(cell)
         self.safes.add(cell)
         surr_cells = self._get_surrounding_cells(cell)
-        print(f"surrounding cells are {surr_cells}, with length {len(surr_cells)}")
         new_sentence = Sentence(surr_cells, count)
         print(f"sentence is {new_sentence}")
         # mark safes
         if count == 0:
-            print(f"Count {count} is equal to 0")
             for surr_cell in surr_cells:
                 new_sentence.mark_safe(surr_cell)
                 self.safes.add(surr_cell)
@@ -232,7 +230,6 @@ class MinesweeperAI:
         # check for other known safes if there are mines in surrounding cells
         else:
             temp_cell_set = set()
-            print(f"Count {count} is equal to 0")
             for surr_cell in surr_cells:
                 if surr_cell in self.safes:
                     temp_cell_set.add(surr_cell)
@@ -240,7 +237,6 @@ class MinesweeperAI:
 
         # get all cells as mines when length is the same
         if count == len(surr_cells):
-            print(f"Count {count} is equal to length {len(surr_cells)}")
             for surr_cell in surr_cells:
                 new_sentence.mark_mine(surr_cell)
                 self.mines.add(surr_cell)
@@ -250,15 +246,39 @@ class MinesweeperAI:
         print(f"Known mines are {self.mines}")
         print("Start comparison with other sentences")
         # compare information with other sentences
-        print(f"Print knowledge: {self.knowledge}")
         for sentence in self.knowledge:
             print(f"Comparing current {surr_cells} with {sentence.cells}")
-            self._compare_two_sentences(new_sentence, sentence)
+            sentence = self._update_sentence(sentence)
         print("Comparison is done")
         print(f"Known safes are {self.safes}")
         print(f"Known mines are {self.mines}")
         self.knowledge.append(new_sentence)
         print(f"New sentence added to knowledge base")
+
+    def _update_sentence(self, sentence):
+        """
+        Updates a given sentence with the knowledge about mines and safes.
+        """
+        if sentence.count > 0:
+            # get rid of mines to find safes
+            for mine in self.mines:
+                if mine in sentence.cells:
+                    sentence.cells.remove(mine)
+                    sentence.count -= 1
+                if len(sentence.cells) == 0:
+                    for cell in sentence.cells:
+                        # sentence.mark_safe(cell)
+                        self.safes.add(cell)
+            # get rid of safes to identify mines
+            for safe in self.safes:
+                sentence.cells.remove(safe) if safe in sentence.cells else None
+                if len(sentence.cells) == sentence.count:
+                    for cell in sentence.cells:
+                        # sentence.mark_mine(cell)
+                        sentence.count -= 1
+                        self.mines.add(cell)
+        return sentence
+
 
     def _compare_two_sentences(self, s1, s2):
         """
@@ -301,19 +321,14 @@ class MinesweeperAI:
             for cell in new_cells:
                 new_sentence.mark_safe(cell)
                 self.safes.add(cell)
-                self.mines.remove(cell)
         elif new_count == len(new_cells):
             print("New sentence is conclusive about mines")
             for cell in new_cells:
                 new_sentence.mark_mine(cell)
-                self.safes.remove(cell)
                 self.mines.add(cell)
 
         # add new sentence to knowledge
         self.knowledge.append(new_sentence)
-        # Todo: We could add recursion here, not sure if it makes sense though
-
-
 
     def make_safe_move(self):
         """
