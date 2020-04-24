@@ -212,13 +212,10 @@ class MinesweeperAI:
             5) add any new sentences to the AI's knowledge base
                if they can be inferred from existing knowledge
         """
-        print(f"count is {count}")
-        print(f"cell is {cell}")
         self.moves_made.add(cell)
         self.safes.add(cell)
         surr_cells = self._get_surrounding_cells(cell)
         new_sentence = Sentence(surr_cells, count)
-        print(f"sentence is {new_sentence}")
         # mark safes
         if count == 0:
             for surr_cell in surr_cells:
@@ -241,19 +238,12 @@ class MinesweeperAI:
                 new_sentence.mark_mine(surr_cell)
                 self.mines.add(surr_cell)
 
-        print("Knowledge method Pt. 1 is done.")
-        print(f"Known safes are {self.safes}")
-        print(f"Known mines are {self.mines}")
-        print("Start comparison with other sentences")
+        # add the new sentence to knowledge base
+        self.knowledge.append(new_sentence)
+
         # compare information with other sentences
         for sentence in self.knowledge:
-            print(f"Comparing current {surr_cells} with {sentence.cells}")
             sentence = self._update_sentence(sentence)
-        print("Comparison is done")
-        print(f"Known safes are {self.safes}")
-        print(f"Known mines are {self.mines}")
-        self.knowledge.append(new_sentence)
-        print(f"New sentence added to knowledge base")
 
     def _update_sentence(self, sentence):
         """

@@ -224,7 +224,9 @@ while True:
         else:
             nearby = game.nearby_mines(move)
             revealed.add(move)
-            print(f"Start adding knowledge with params move  {move} and nearby {nearby}")
+            print(
+                f"Start adding knowledge with params move  {move} and nearby {nearby}"
+            )
             ai.add_knowledge(move, nearby)
 
     pygame.display.flip()
