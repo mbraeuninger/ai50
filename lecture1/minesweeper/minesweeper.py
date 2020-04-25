@@ -242,7 +242,7 @@ class MinesweeperAI:
         """
         Updates a given sentence with the knowledge about mines and safes.
         """
-        # work with a copy
+        # work with a copy to keep the original sentence
         deepcopy_sentence = copy.deepcopy(sentence)
         if deepcopy_sentence.count > 0 and len(sentence.cells) > 0:
 
