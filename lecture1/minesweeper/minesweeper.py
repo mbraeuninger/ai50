@@ -122,7 +122,7 @@ class Sentence:
         """
         if cell in self.cells and self.count > 0:
             self.cells.remove(cell)
-            self.count - 1
+            self.count -= 1
 
     def mark_safe(self, cell):
         """
