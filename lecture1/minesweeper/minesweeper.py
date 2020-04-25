@@ -1,4 +1,5 @@
 import random
+import copy
 
 
 class Minesweeper:
@@ -216,6 +217,9 @@ class MinesweeperAI:
         self.safes.add(cell)
         surr_cells = self._get_surrounding_cells(cell)
         new_sentence = Sentence(surr_cells, count)
+
+        # add the new sentence to knowledge base
+        self.knowledge.append(new_sentence)
         # mark safes if there are any
         if count == 0:
             for surr_cell in surr_cells:
@@ -230,9 +234,6 @@ class MinesweeperAI:
                 new_sentence.mark_mine(surr_cell)
                 self.mines.add(surr_cell)
 
-        # add the new sentence to knowledge base
-        self.knowledge.append(new_sentence)
-
         # compare information with other sentences
         for sentence in self.knowledge:
             self._update_sentence(sentence)
@@ -241,25 +242,30 @@ class MinesweeperAI:
         """
         Updates a given sentence with the knowledge about mines and safes.
         """
-        if sentence.count > 0:
-            # get rid of mines to find safes
-            for mine in self.mines:
-                if mine in sentence.cells:
-                    sentence.cells.remove(mine)
-                    sentence.count -= 1
-                if len(sentence.cells) == 0:
-                    for cell in sentence.cells:
-                        # sentence.mark_safe(cell)
-                        self.safes.add(cell)
+        # work with a copy
+        deepcopy_sentence = copy.deepcopy(sentence)
+        if deepcopy_sentence.count > 0 and len(sentence.cells) > 0:
+
             # get rid of safes to identify mines
             for safe in self.safes:
-                sentence.cells.remove(safe) if safe in sentence.cells else None
-                if len(sentence.cells) == sentence.count:
-                    for cell in sentence.cells:
-                        # sentence.mark_mine(cell)
-                        sentence.count -= 1
+                deepcopy_sentence.cells.remove(safe) if safe in deepcopy_sentence.cells else None
+                if len(deepcopy_sentence.cells) == deepcopy_sentence.count and len(deepcopy_sentence.cells) > 0:
+                    temp_set = set() # store mines temporarily in order to avoid KEYERROR
+                    for cell in deepcopy_sentence.cells:
                         self.mines.add(cell)
-        return sentence
+                        temp_set.add(cell)
+                    for cell in temp_set:
+                        deepcopy_sentence.cells.remove(cell)
+                        deepcopy_sentence.count -= 1
+
+            # get rid of mines to find safes
+            for mine in self.mines:
+                if mine in deepcopy_sentence.cells:
+                    deepcopy_sentence.cells.remove(mine)
+                    deepcopy_sentence.count -= 1
+                    if deepcopy_sentence.count == 0 and len(deepcopy_sentence.cells) > 0:
+                        for cell in deepcopy_sentence.cells:
+                            self.safes.add(cell)
 
     def make_safe_move(self):
         """
