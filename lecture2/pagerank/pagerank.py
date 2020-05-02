@@ -40,10 +40,7 @@ def crawl(directory):
 
     # Only include links to other pages in the corpus
     for filename in pages:
-        pages[filename] = set(
-            link for link in pages[filename]
-            if link in pages
-        )
+        pages[filename] = set(link for link in pages[filename] if link in pages)
 
     return pages
 
@@ -63,7 +60,7 @@ def transition_model(corpus, page, damping_factor):
 
     # calculate probability of redirect pages
     for link in corpus[page]:
-        p = damping_factor / len(corpus[page]) 
+        p = damping_factor / len(corpus[page])
         output[link] = p
 
     # calculate the probability of random page
@@ -97,9 +94,11 @@ def sample_pagerank(corpus, damping_factor, n):
     output[page] += 1
 
     # iterate over remaining samples (-1)
-    for i in range(n-1):
+    for i in range(n - 1):
         p_dis = transition_model(corpus, page, damping_factor)
-        next = random.choices(population=list(p_dis.keys()), weights=list(p_dis.values()))[0]
+        next = random.choices(
+            population=list(p_dis.keys()), weights=list(p_dis.values())
+        )[0]
         output[next] += 1
         page = next
 
@@ -110,7 +109,7 @@ def sample_pagerank(corpus, damping_factor, n):
     return output
 
 
-def iterate_pagerank(corpus, damping_factor):
+def iterate_pagerank(corpus, damping_factor, probability_distribution=None):
     """
     Return PageRank values for each page by iteratively updating
     PageRank values until convergence.
@@ -119,7 +118,54 @@ def iterate_pagerank(corpus, damping_factor):
     their estimated PageRank value (a value between 0 and 1). All
     PageRank values should sum to 1.
     """
-    raise NotImplementedError
+    # assign equal probability to each page
+    if not probability_distribution:
+        probability_distribution = dict()
+        for link in corpus:
+            probability_distribution[link] = 1 / len(corpus)
+
+    # get new page rank
+    new_probability_distribution = dict()
+    for link in probability_distribution:
+        p = (1 - damping_factor) / len(probability_distribution) + damping_factor * agg_source_pagerank(
+                                                                                                        page=link,
+                                                                                                        probability_distribution=probability_distribution
+                                                                                                        corpus=corpus)
+        new_probability_distribution[link] = p
+
+    # check for difference between old and new (< 0.001)
+    diff_list = []
+    for page in new_probability_distribution:
+        diff_list.append(abs(new_probability_distribution[page] - probability_distribution[page]))
+
+    if max(diff_list) >= 0.001:
+        iterate_pagerank(
+            corpus,
+            damping_factor,
+            probability_distribution=new_probability_distribution,
+        )
+
+    return new_probability_distribution
+
+
+def agg_source_pagerank(page, probability_distribution, corpus):
+    """
+    Helper method to calculate the second part of the iterative method.
+    """
+    p = 0
+    source_pages = []
+
+    # get source pages
+    for link in corpus:
+        if page in corpus[link] and page not in source_pages:
+            source_pages.append(link)
+
+    print(f"sources of {page} are {source_pages}")
+    # calculate probability of being on source page
+    for source in source_pages:
+        p += probability_distribution[source] / len(corpus[source])
+
+    return p
 
 
 if __name__ == "__main__":
