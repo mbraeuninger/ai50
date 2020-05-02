@@ -11,6 +11,7 @@ def main():
     if len(sys.argv) != 2:
         sys.exit("Usage: python pagerank.py corpus")
     corpus = crawl(sys.argv[1])
+    print(f"corpus {corpus}")
     ranks = sample_pagerank(corpus, DAMPING, SAMPLES)
     print(f"PageRank Results from Sampling (n = {SAMPLES})")
     for page in sorted(ranks):
@@ -85,6 +86,7 @@ def sample_pagerank(corpus, damping_factor, n):
     """
 
     # make dict to collect page occurences
+    # Fixme: Pages without redirect links are not correctly counted yet (see corpus2 results)
     output = dict()
     for link in corpus:
         output[link] = 0
