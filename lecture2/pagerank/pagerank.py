@@ -139,13 +139,13 @@ def iterate_pagerank(corpus, damping_factor, probability_distribution=None):
         diff_list.append(abs(new_probability_distribution[page] - probability_distribution[page]))
 
     if max(diff_list) >= 0.001:
-        iterate_pagerank(
-            corpus,
-            damping_factor,
+        return iterate_pagerank(
+            corpus=corpus,
+            damping_factor=damping_factor,
             probability_distribution=new_probability_distribution,
         )
-
-    return new_probability_distribution
+    else:
+        return new_probability_distribution
 
 
 def agg_source_pagerank(page, probability_distribution, corpus):
@@ -159,7 +159,7 @@ def agg_source_pagerank(page, probability_distribution, corpus):
     for link in corpus:
         if page in corpus[link] and page not in source_pages:
             source_pages.append(link)
-            
+
     # calculate probability of being on source page
     for source in source_pages:
         p += probability_distribution[source] / len(corpus[source])
