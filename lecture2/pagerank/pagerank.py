@@ -129,7 +129,7 @@ def iterate_pagerank(corpus, damping_factor, probability_distribution=None):
     for link in probability_distribution:
         p = (1 - damping_factor) / len(probability_distribution) + damping_factor * agg_source_pagerank(
                                                                                                         page=link,
-                                                                                                        probability_distribution=probability_distribution
+                                                                                                        probability_distribution=probability_distribution,
                                                                                                         corpus=corpus)
         new_probability_distribution[link] = p
 
@@ -159,8 +159,7 @@ def agg_source_pagerank(page, probability_distribution, corpus):
     for link in corpus:
         if page in corpus[link] and page not in source_pages:
             source_pages.append(link)
-
-    print(f"sources of {page} are {source_pages}")
+            
     # calculate probability of being on source page
     for source in source_pages:
         p += probability_distribution[source] / len(corpus[source])
