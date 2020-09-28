@@ -1,6 +1,7 @@
 import csv
 import itertools
 import sys
+import random
 
 PROBS = {
 
@@ -10,7 +11,7 @@ PROBS = {
         1: 0.03,
         0: 0.96
     },
-
+ 
     "trait": {
 
         # Probability of trait given two copies of gene
@@ -79,10 +80,12 @@ def main():
             for two_genes in powerset(names - one_gene):
 
                 # Update probabilities with new joint probability
-                # ToDo: Get rid of test case
-                p = joint_probability(people, {"Harry"}, {"James"}, {"James"})
                 # p = joint_probability(people, one_gene, two_genes, have_trait)
                 # update(probabilities, one_gene, two_genes, have_trait, p)
+
+
+                # ToDo: Get rid of test case
+                p = joint_probability(people, {"Harry"}, {"James"}, {"James"})
                 update(probabilities, {"Harry"}, {"James"}, {"James"}, p)
 
     # Ensure probabilities sum to 1
@@ -143,14 +146,70 @@ def joint_probability(people, one_gene, two_genes, have_trait):
         * everyone in set `have_trait` has the trait, and
         * everyone not in set` have_trait` does not have the trait.
     """
+    # build dict with structure info about each person
+    info = {p: {"genes": 0, "has_trait": False} for p in people}
     for p in people:
-        # assign probabilities without parents
-        if not people[p]['mother']:
-            for gene in probabilities[p]["gene"]:
-                probabilities[p]["gene"][gene] = PROBS["gene"][gene]
+        if p in one_gene:
+            info[p]["genes"] = 1
+        elif p in two_genes:
+            info[p]["genes"] = 2
+        if p in have_trait:
+            info[p]["has_trait"] = True
+    print(people)
 
-    raise NotImplementedError
+    # set joint probability jp = 1
+    jp = 1
+    for p in people:
+        # check for  parents
+        if p["mother"]:
+            if p in one_gene: # check for one gene p: you inherit one gene from either parent
+                # find mother and father
+                mother = p["mother"]
+                father = p["father"]
+                # first case: mother yes and father no
+                # second case: mother no and father yes
+                
+        else:
+            None
+        
+    # assign probabilities without parents based on PROBS["gene"]
+    # check two genes
+    # check for traits
 
+    return None # jp
+# PROBS = {
+
+#     # Unconditional probabilities for having gene
+#     "gene": {
+#         2: 0.01,
+#         1: 0.03,
+#         0: 0.96
+#     },
+ 
+#     "trait": {
+
+#         # Probability of trait given two copies of gene
+#         2: {
+#             True: 0.65,
+#             False: 0.35
+#         },
+
+#         # Probability of trait given one copy of gene
+#         1: {
+#             True: 0.56,
+#             False: 0.44
+#         },
+
+#         # Probability of trait given no gene
+#         0: {
+#             True: 0.01,
+#             False: 0.99
+#         }
+#     },
+
+#     # Mutation probability
+#     "mutation": 0.01
+# }
 
 def update(probabilities, one_gene, two_genes, have_trait, p):
     """
