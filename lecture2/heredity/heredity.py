@@ -44,7 +44,6 @@ def main():
     if len(sys.argv) != 2:
         sys.exit("Usage: python heredity.py data.csv")
     people = load_data(sys.argv[1])
-    print(people)
 
     # Keep track of gene and trait probabilities for each person
     probabilities = {
@@ -152,15 +151,12 @@ def joint_probability(people, one_gene, two_genes, have_trait):
             info[p]["has_trait"] = True
         if people[p]["mother"]:
             info[p]["has_parents"] = True
-    print(f"people: {people}")
-    print(f"info: {info}")
 
     # set joint probability
     joint_prob = 1
 
     # get joint probabilities for every person
     for p in people:
-        print(f"person {p}")
         # check for parents
         if info[p]["has_parents"]:
             # get probability of both parents to pass down gene
@@ -227,9 +223,9 @@ def update(probabilities, one_gene, two_genes, have_trait, p):
             probabilities[person]["trait"][True] = p
         else:
             probabilities[person]["trait"][False] = p
+
     return probabilities
        
-
 
 def normalize(probabilities):
     """
