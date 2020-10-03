@@ -84,6 +84,7 @@ def main():
 
     # Ensure probabilities sum to 1
     normalize(probabilities)
+    print(f"Final probabilities are here:\n{probabilities}")
 
     # Print results
     for person in people:
@@ -231,13 +232,19 @@ def normalize(probabilities):
     is normalized (i.e., sums to 1, with relative proportions the same).
     """
     for person in probabilities:
-        if sum(probabilities[person]["gene"].values()) > 0:
+        print(f"go over people. {person}")
+        total = sum(probabilities[person]["gene"].values())
+        print(f"{total} is sum of genes")
+        gene_total = sum(probabilities[person]["gene"].values()) > 0
+        if gene_total:
             for g in probabilities[person]["gene"]:
-                probabilities[person]["gene"][g] = probabilities[person]["gene"][g] / sum(probabilities[person]["gene"].values())
-        if sum(probabilities[person]["trait"].values()) > 0:
+                value = probabilities[person]["gene"][g] / gene_total
+                probabilities[person]["gene"][g] = value
+        trait_total = sum(probabilities[person]["trait"].values())
+        if trait_total > 0:
             for cond in probabilities[person]["trait"]:
-                probabilities[person]["trait"][cond] = probabilities[person]["trait"][cond] / sum(probabilities[person]["trait"].values())
-
+                value = probabilities[person]["trait"][cond] / trait_total
+                probabilities[person]["trait"][cond] = value
 
 if __name__ == "__main__":
     main()
