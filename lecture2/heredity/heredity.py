@@ -223,8 +223,6 @@ def update(probabilities, one_gene, two_genes, have_trait, p):
             probabilities[person]["trait"][True] = p
         else:
             probabilities[person]["trait"][False] = p
-
-    return probabilities
        
 
 def normalize(probabilities):
@@ -232,7 +230,11 @@ def normalize(probabilities):
     Update `probabilities` such that each probability distribution
     is normalized (i.e., sums to 1, with relative proportions the same).
     """
-    raise NotImplementedError
+    for person in probabilities:
+        for g in gene:
+            probabilities[person]["gene"][g] = probabilities[person]["gene"][g] / sum(probabilities[p]["gene"].values())
+        for cond in trait:
+            probabilities[person]["trait"][cond] = probabilities[person]["trait"][cond] / sum(probabilities[p]["trait"].values())
 
 
 if __name__ == "__main__":
