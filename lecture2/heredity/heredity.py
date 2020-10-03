@@ -231,10 +231,12 @@ def normalize(probabilities):
     is normalized (i.e., sums to 1, with relative proportions the same).
     """
     for person in probabilities:
-        for g in gene:
-            probabilities[person]["gene"][g] = probabilities[person]["gene"][g] / sum(probabilities[p]["gene"].values())
-        for cond in trait:
-            probabilities[person]["trait"][cond] = probabilities[person]["trait"][cond] / sum(probabilities[p]["trait"].values())
+        if sum(probabilities[person]["gene"].values()) > 0:
+            for g in probabilities[person]["gene"]:
+                probabilities[person]["gene"][g] = probabilities[person]["gene"][g] / sum(probabilities[person]["gene"].values())
+        if sum(probabilities[person]["trait"].values()) > 0:
+            for cond in probabilities[person]["trait"]:
+                probabilities[person]["trait"][cond] = probabilities[person]["trait"][cond] / sum(probabilities[person]["trait"].values())
 
 
 if __name__ == "__main__":
