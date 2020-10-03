@@ -215,20 +215,20 @@ def update(probabilities, one_gene, two_genes, have_trait, p):
     Which value for each distribution is updated depends on whether
     the person is in `have_gene` and `have_trait`, respectively.
     """
-    print(f"probabilities at start: {probabilities}")
+    print(f"this is p: {p}")
     # iterate over people
-    for p in probabilities:
-        if p in one_gene:
-            probabilities[p][1] = p
-        elif p in two_genes:
-            probabilities[p][2] = p
+    for person in probabilities:
+        if person in one_gene:
+            probabilities[person][1] = p
+        elif person in two_genes:
+            probabilities[person][2] = p
         else:
-            probabilities[p][0] = p
-        if p in have_trait:
-            probabilities[p]["trait"][True] = p
+            probabilities[person][0] = p
+        if person in have_trait:
+            probabilities[person]["trait"][True] = p
         else:
-            probabilities[p]["trait"][False] = p
-    
+            probabilities[person]["trait"][False] = p
+    print(f"probabilities at end: {probabilities}")
     return probabilities
        
 
