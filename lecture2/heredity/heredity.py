@@ -90,7 +90,11 @@ def main():
     for person in people:
         print(f"{person}:")
         for field in probabilities[person]:
-            print(f"  {field.capitalize()}:")
+            print(f"  {str(field).capitalize()}:")
+
+            print(f"this is the value: {probabilities[person][field]}")
+
+
             for value in probabilities[person][field]:
                 p = probabilities[person][field][value]
                 print(f"    {value}: {p:.4f}")
@@ -215,11 +219,11 @@ def update(probabilities, one_gene, two_genes, have_trait, p):
     # iterate over people
     for person in probabilities:
         if person in one_gene:
-            probabilities[person][1] = p
+            probabilities[person]["gene"][1] = p
         elif person in two_genes:
-            probabilities[person][2] = p
+            probabilities[person]["gene"][2] = p
         else:
-            probabilities[person][0] = p
+            probabilities[person]["gene"][0] = p
         if person in have_trait:
             probabilities[person]["trait"][True] = p
         else:
@@ -232,11 +236,8 @@ def normalize(probabilities):
     is normalized (i.e., sums to 1, with relative proportions the same).
     """
     for person in probabilities:
-        print(f"go over people. {person}")
-        total = sum(probabilities[person]["gene"].values())
-        print(f"{total} is sum of genes")
         gene_total = sum(probabilities[person]["gene"].values()) > 0
-        if gene_total:
+        if gene_total > 0:
             for g in probabilities[person]["gene"]:
                 value = probabilities[person]["gene"][g] / gene_total
                 probabilities[person]["gene"][g] = value
@@ -248,3 +249,18 @@ def normalize(probabilities):
 
 if __name__ == "__main__":
     main()
+
+    #     probabilities = {
+    #     person: {
+    #         "gene": {
+    #             2: 0,
+    #             1: 0,
+    #             0: 0
+    #         },
+    #         "trait": {
+    #             True: 0,
+    #             False: 0
+    #         }
+    #     }
+    #     for person in people
+    # }
