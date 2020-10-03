@@ -83,11 +83,6 @@ def main():
                 p = joint_probability(people, one_gene, two_genes, have_trait)
                 update(probabilities, one_gene, two_genes, have_trait, p)
 
-
-                # ToDo: Get rid of test case
-                # p = joint_probability(people, {"Harry"}, {"James"}, {"James"})
-                # update(probabilities, {"Harry"}, {"James"}, {"James"}, p)
-
     # Ensure probabilities sum to 1
     normalize(probabilities)
 
@@ -211,39 +206,7 @@ def probablity_to_pass_gene(person, info):
         passing_prob = 1 - PROBS["mutation"]
 
     return passing_prob
-# PROBS = {
 
-#     # Unconditional probabilities for having gene
-#     "gene": {
-#         2: 0.01,
-#         1: 0.03,
-#         0: 0.96
-#     },
- 
-#     "trait": {
-
-#         # Probability of trait given two copies of gene
-#         2: {
-#             True: 0.65,
-#             False: 0.35
-#         },
-
-#         # Probability of trait given one copy of gene
-#         1: {
-#             True: 0.56,
-#             False: 0.44
-#         },
-
-#         # Probability of trait given no gene
-#         0: {
-#             True: 0.01,
-#             False: 0.99
-#         }
-#     },
-
-#     # Mutation probability
-#     "mutation": 0.01
-# }
 
 def update(probabilities, one_gene, two_genes, have_trait, p):
     """
@@ -252,7 +215,22 @@ def update(probabilities, one_gene, two_genes, have_trait, p):
     Which value for each distribution is updated depends on whether
     the person is in `have_gene` and `have_trait`, respectively.
     """
-    raise NotImplementedError
+    print(f"probabilities at start: {probabilities}")
+    # iterate over people
+    for p in probabilities:
+        if p in one_gene:
+            probabilities[p][1] = p
+        elif p in two_genes:
+            probabilities[p][2] = p
+        else:
+            probabilities[p][0] = p
+        if p in have_trait:
+            probabilities[p]["trait"][True] = p
+        else:
+            probabilities[p]["trait"][False] = p
+    
+    return probabilities
+       
 
 
 def normalize(probabilities):
