@@ -196,7 +196,7 @@ def probablity_to_pass_gene(person, info):
         passing_prob = PROBS["mutation"]
     elif genes == 1:
         # probability to pass on gene is 0.5
-        passing_prob = 0.5 + (0.5 * PROBS["mutation"])
+        passing_prob = (0.5 * (1 - PROBS["mutation"])) + (0.5 * PROBS["mutation"])
     else:
         # probability to pass on gene is 1
         passing_prob = 1 - PROBS["mutation"]
