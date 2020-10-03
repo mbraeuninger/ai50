@@ -161,16 +161,16 @@ def joint_probability(people, one_gene, two_genes, have_trait):
     joint_prob = 1
 
     # get joint probabilities for every person
-    for p in people:
+    for person in people:
         # check for parents
-        if info[p]["has_parents"]:
+        if info[person]["has_parents"]:
             # get probability of both parents to pass down gene
-            father_prob = probablity_to_pass_gene(people[p]["father"], info)
-            mother_prob = probablity_to_pass_gene(people[p]["mother"], info)     
-            if info[p]["genes"] == 0:
+            father_prob = probablity_to_pass_gene(people[person]["father"], info)
+            mother_prob = probablity_to_pass_gene(people[person]["mother"], info)     
+            if info[person]["genes"] == 0:
                 # when there are supposed to be 0 genes we need the probability that both parents DO NOT pass it down
                 joint_prob_temp = (1 - father_prob) *  (1 - mother_prob)
-            elif info[p]["genes"] == 1:
+            elif info[person]["genes"] == 1:
                 # when there are supposed to be 1 genes we need the probability that ONE OF the parents pass it down
                 joint_prob_temp = father_prob * (1 - mother_prob) + mother_prob * (1 - father_prob)
             else:
@@ -178,9 +178,9 @@ def joint_probability(people, one_gene, two_genes, have_trait):
                 joint_prob_temp = father_prob * mother_prob
         else:
             # get probability to have X genes
-            gene_prob = PROBS["gene"][info[p]["genes"]]
+            gene_prob = PROBS["gene"][info[person]["genes"]]
             # get probablity to have trait with X genes
-            trait_prob = PROBS["trait"][info[p]["genes"]][info[p]["has_trait"]]
+            trait_prob = PROBS["trait"][info[person]["genes"]][info[person]["has_trait"]]
             # get joint probablity of both
             joint_prob_temp = gene_prob * trait_prob
         # add new factor to final joint probability
@@ -198,7 +198,7 @@ def probablity_to_pass_gene(person, info):
     genes = info[person]["genes"]
     if genes == 0:
         # probability to pass on gene is 0
-        passing_prob = 0 + PROBS["mutation"]
+        passing_prob = PROBS["mutation"]
     elif genes == 1:
         # probability to pass on gene is 0.5
         passing_prob = 0.5 - PROBS["mutation"]
@@ -236,7 +236,7 @@ def normalize(probabilities):
     is normalized (i.e., sums to 1, with relative proportions the same).
     """
     for person in probabilities:
-        gene_total = sum(probabilities[person]["gene"].values()) > 0
+        gene_total = sum(probabilities[person]["gene"].values())
         if gene_total > 0:
             for g in probabilities[person]["gene"]:
                 value = probabilities[person]["gene"][g] / gene_total
