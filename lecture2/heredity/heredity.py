@@ -147,7 +147,7 @@ def joint_probability(people, one_gene, two_genes, have_trait):
         * everyone not in set` have_trait` does not have the trait.
     """
     # build dict with structure info about each person
-    info = {p: {"genes": 0, "has_trait": False} for p in people}
+    info = {p: {"genes": 0, "has_trait": False, "has_parents": False} for p in people}
     for p in people:
         if p in one_gene:
             info[p]["genes"] = 1
@@ -155,28 +155,29 @@ def joint_probability(people, one_gene, two_genes, have_trait):
             info[p]["genes"] = 2
         if p in have_trait:
             info[p]["has_trait"] = True
-    print(people)
+        if people[p]["mother"]:
+            info[p]["has_parents"] = True
+    print(f"people: {people}")
+    print(f"info: {info}")
 
     # set joint probability jp = 1
-    jp = 1
+    joint_prob = 1
     for p in people:
-        # check for  parents
-        if p["mother"]:
-            if p in one_gene: # check for one gene p: you inherit one gene from either parent
-                # find mother and father
-                mother = p["mother"]
-                father = p["father"]
-                # first case: mother yes and father no
-                # second case: mother no and father yes
-                
-        else:
+        print(f"person {p}")
+        # check for parents
+        if info[p]["parents"]:
             None
-        
-    # assign probabilities without parents based on PROBS["gene"]
-    # check two genes
-    # check for traits
+        else:
+            # get probability to have X genes
+            gene_prob = PROBS["gene"][info[p]["genes"]]
+            # get probablity to have trait with X genes
+            trait_prob = PROBS["trait"][info[p]["genes"][info[p]["has_trait"]]]
+            # get joint probablity of both
+            joint_prob_temp = gene_prob * trait_prob
+        # add new factor to final joint probability
+        joint_prob = joint_prob * joint_prob_temp 
 
-    return None # jp
+    return joint_prob
 # PROBS = {
 
 #     # Unconditional probabilities for having gene
