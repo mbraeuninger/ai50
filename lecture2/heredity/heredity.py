@@ -84,17 +84,12 @@ def main():
 
     # Ensure probabilities sum to 1
     normalize(probabilities)
-    print(f"Final probabilities are here:\n{probabilities}")
 
     # Print results
     for person in people:
         print(f"{person}:")
         for field in probabilities[person]:
             print(f"  {str(field).capitalize()}:")
-
-            print(f"this is the value: {probabilities[person][field]}")
-
-
             for value in probabilities[person][field]:
                 p = probabilities[person][field][value]
                 print(f"    {value}: {p:.4f}")
@@ -249,18 +244,3 @@ def normalize(probabilities):
 
 if __name__ == "__main__":
     main()
-
-    #     probabilities = {
-    #     person: {
-    #         "gene": {
-    #             2: 0,
-    #             1: 0,
-    #             0: 0
-    #         },
-    #         "trait": {
-    #             True: 0,
-    #             False: 0
-    #         }
-    #     }
-    #     for person in people
-    # }
