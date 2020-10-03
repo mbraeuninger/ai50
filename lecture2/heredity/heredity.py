@@ -167,7 +167,7 @@ def joint_probability(people, one_gene, two_genes, have_trait):
                 joint_prob_temp = (1 - father_prob) *  (1 - mother_prob)
             elif info[person]["genes"] == 1:
                 # when there are supposed to be 1 genes we need the probability that ONE OF the parents pass it down
-                joint_prob_temp = father_prob * (1 - mother_prob) + mother_prob * (1 - father_prob)
+                joint_prob_temp = (father_prob * (1 - mother_prob)) + (mother_prob * (1 - father_prob))
             else:
                 # when there are supposed to be 2 genes we need the probability that BOTH PARENTS do pass it down
                 joint_prob_temp = father_prob * mother_prob
@@ -196,7 +196,7 @@ def probablity_to_pass_gene(person, info):
         passing_prob = PROBS["mutation"]
     elif genes == 1:
         # probability to pass on gene is 0.5
-        passing_prob = 0.5 - PROBS["mutation"]
+        passing_prob = 0.5 + (0.5 * PROBS["mutation"])
     else:
         # probability to pass on gene is 1
         passing_prob = 1 - PROBS["mutation"]
@@ -214,15 +214,15 @@ def update(probabilities, one_gene, two_genes, have_trait, p):
     # iterate over people
     for person in probabilities:
         if person in one_gene:
-            probabilities[person]["gene"][1] = p
+            probabilities[person]["gene"][1] += p
         elif person in two_genes:
-            probabilities[person]["gene"][2] = p
+            probabilities[person]["gene"][2] += p
         else:
-            probabilities[person]["gene"][0] = p
+            probabilities[person]["gene"][0] += p
         if person in have_trait:
-            probabilities[person]["trait"][True] = p
+            probabilities[person]["trait"][True] += p
         else:
-            probabilities[person]["trait"][False] = p
+            probabilities[person]["trait"][False] += p
        
 
 def normalize(probabilities):
