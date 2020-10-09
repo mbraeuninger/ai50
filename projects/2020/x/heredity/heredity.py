@@ -159,18 +159,20 @@ def joint_probability(people, one_gene, two_genes, have_trait):
     for person in people:
         # check for parents
         if info[person]["has_parents"]:
+            # check for final goal regarding trait expression
+            trait_prob = PROBS["trait"][info[person]["genes"]][info[person]["has_trait"]]
             # get probability of both parents to pass down gene
             father_prob = probablity_to_pass_gene(people[person]["father"], info)
             mother_prob = probablity_to_pass_gene(people[person]["mother"], info)     
             if info[person]["genes"] == 0:
                 # when there are supposed to be 0 genes we need the probability that both parents DO NOT pass it down
-                joint_prob_temp = (1 - father_prob) *  (1 - mother_prob)
+                joint_prob_temp = (1 - father_prob) *  (1 - mother_prob) * trait_prob
             elif info[person]["genes"] == 1:
                 # when there are supposed to be 1 genes we need the probability that ONE OF the parents pass it down
-                joint_prob_temp = (father_prob * (1 - mother_prob)) + (mother_prob * (1 - father_prob))
+                joint_prob_temp = ((father_prob * (1 - mother_prob)) + (mother_prob * (1 - father_prob))) * trait_prob
             else:
                 # when there are supposed to be 2 genes we need the probability that BOTH PARENTS do pass it down
-                joint_prob_temp = father_prob * mother_prob
+                joint_prob_temp = father_prob * mother_prob * trait_prob
         else:
             # get probability to have X genes
             gene_prob = PROBS["gene"][info[person]["genes"]]
