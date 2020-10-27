@@ -2,7 +2,7 @@ attrs==19.3.0
 certifi==2019.11.28
 cffi==1.14.0
 chardet==3.0.4
-cryptography==2.9
+cryptography==3.2
 idna==2.9
 jellyfish==0.7.2
 lib50==2.0.8
