@@ -116,9 +116,9 @@ class CrosswordCreator():
         Return True if a revision was made to the domain of `x`; return
         False if no revision was made.
         """
-        if self.crowssword.overlaps[x, y]:
-            i = self.crowssword.overlaps[x, y][0]
-            j = self.crowssword.overlaps[x, y][1]
+        if self.crossword.overlaps[x, y]:
+            i = self.crossword.overlaps[x, y][0]
+            j = self.crossword.overlaps[x, y][1]
             
             revision_counter = 0
             for word in self.domains[x]:
@@ -150,14 +150,18 @@ class CrosswordCreator():
             arcs = []
             vars = [var for var in self.domains.keys()]
             for var in vars:
+                # print(f"var: {var}")
+                # print(f"overlaps:\n{self.crossword.overlaps}")
                 for var2 in vars:
-                    if var2 in self.crossword.overlaps[var]:
+                    if var == var2: # skip when variable is same
+                        continue
+                    if self.crossword.overlaps[var, var2]:
                         arcs.append((var, var2))
 
         while len(arcs) > 0:
             for arc in arcs:
                 arcs.remove(arc)
-                if revise(arc[0], arc[1]):
+                if self.revise(arc[0], arc[1]):
                     if len(self.domains[arc[0]]) == 0:
                         return False
                     for var in self.crossword.neighbors(arc[0]):
@@ -196,6 +200,7 @@ class CrosswordCreator():
                     return False
         
         return True
+        
 
     def order_domain_values(self, var, assignment):
         """
