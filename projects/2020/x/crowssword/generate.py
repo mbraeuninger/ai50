@@ -1,4 +1,5 @@
 import sys
+import copy
 
 from crossword import *
 
@@ -31,7 +32,7 @@ class CrosswordCreator():
                 letters[i][j] = word[k]
         return letters
 
-    def print(self, assignment):
+    def _rint(self, assignment):
         """
         Print crossword assignment to the terminal.
         """
@@ -99,9 +100,10 @@ class CrosswordCreator():
         (Remove any values that are inconsistent with a variable's unary
          constraints; in this case, the length of the word.)
         """
-        for var, words in self.domains.items():
+        for var in self.domains.keys():
+            words = copy.deepcopy(self.domains[var])
             for word in words:
-                if var.length != len(word)+1:
+                if var.length != len(word):
                     self.domains[var].remove(word)
 
 
@@ -149,12 +151,8 @@ class CrosswordCreator():
             vars = [var for var in self.domains.keys()]
             for var in vars:
                 for var2 in vars:
-                    if var != var2:
+                    if var2 in self.crossword.overlaps[var]:
                         arcs.append((var, var2))
-            # check if var combinations are actually arcs            
-            for arc in arcs:
-                if not self.crossword.overlaps(arc[0], arc[1]):
-                    arcs.remove(arc)
 
         while len(arcs) > 0:
             for arc in arcs:
@@ -184,7 +182,7 @@ class CrosswordCreator():
         puzzle without conflicting characters); return False otherwise.
         """
         # check if values are distinct:
-        if len([value for value in assignment.values()] > len(set(assignment.values())):
+        if len([value for value in assignment.values()]) > len(set(assignment.values())):
             return False
 
         for var, word in assignment.items():
