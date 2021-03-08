@@ -121,7 +121,7 @@ class CrosswordCreator():
             j = self.crossword.overlaps[x, y][1]
             
             revision_counter = 0
-            for word in self.domains[x]:
+            for word in copy.deepcopy(self.domains[x]):
                 letters_y = [w[j] for w in self.domains[y]]
                 if word[i] not in letters_y:
                     self.domains[x].remove(word)
@@ -165,7 +165,7 @@ class CrosswordCreator():
                     if len(self.domains[arc[0]]) == 0:
                         return False
                     for var in self.crossword.neighbors(arc[0]):
-                        arcs.append(var, arc[0])
+                        arcs.append((var, arc[0]))
         return True
         
 
@@ -200,7 +200,7 @@ class CrosswordCreator():
                     return False
         
         return True
-        
+
 
     def order_domain_values(self, var, assignment):
         """
@@ -214,13 +214,13 @@ class CrosswordCreator():
         # get domain of variable
         words = self.domains[var]
         # find domain for each neighbor
-        word_dict = {n: self.domains[neighbor] for neighbor in neighbors}
+        word_dict = {neighbor: self.domains[neighbor] for neighbor in neighbors}
         # create dict with domain values 
         output_dict = {}
         for word in words:
-            output_dict[w]: len([word if word in word_dict[neighbor] else None for neighbor in neighbors])
+            output_dict[word]: len([word if word in word_dict[neighbor] else None for neighbor in neighbors])
         # sort by matching values counted
-        output_dict = {w: l for w, l in sorted(output_dict.items(), key=lambda x: x[1])}        
+        output_dict = {w: l for w, l in sorted(output_dict.items(), key=lambda x: x[1])}      
 
         return list(output_dict.keys())
 
@@ -256,15 +256,15 @@ class CrosswordCreator():
 
         If no assignment is possible, return None.
         """
-        if assignment_complete(assignment):
+        if self.assignment_complete(assignment):
             return assignment
         else:
-            var = select_unassigned_variable(assignment)
-            for word in order_domain_values(var, assignment):
+            var = self.select_unassigned_variable(assignment)
+            for word in self.order_domain_values(var, assignment):
                 if consistent(assignment): #TODO: That does not make sens with the current function
                     self.domains[var].add(word)
-                    result = backtrack(assignment)
-                    if assignment_complete(result):
+                    result = self.backtrack(assignment)
+                    if self.assignment_complete(result):
                         return result
                     else:
                         self.domains[var].remove(word)
