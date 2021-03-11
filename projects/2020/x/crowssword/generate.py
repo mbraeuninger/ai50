@@ -248,28 +248,19 @@ class CrosswordCreator():
         return values.
         """
         # find unassigned vars
-        if not assignment:
-            unassigned = list(self.domains.keys())
-        else:
-            unassigned = list(self.domains.keys())
-            for var in unassigned:
-                if var in assignment.keys():
-                    unassigned.remove(var)
+        unassigned = self.domains.keys() - assignment.keys()
         
         # check how many values they have and pick var with lowest
         values = {var: len(self.domains[var]) for var in unassigned}
-        # print(f"values are {values}")
-        results = [var for var in values if values[var] == min(values.values())]
-        # print(f"results are {results}")
+        sorted_values = sorted(values.items(), key=lambda x: x[1])
+        
         # check degree (number of neighbors) in case you have multiple options
-        if len(results) == 1:
-            return results[0]
+        if len(sorted_values) == 1 or sorted_values[0][1] < sorted_values[1][1]:
+            return sorted_values[0][0]
         else:
-            neighbors = {var: len(self.crossword.neighbors(var)) for var in results}
-            # print(f"neighbors else {neighbors}")
-            results = [var for var in neighbors if neighbors[var] == max(neighbors.values())]
-            # print(f"results else {results}")
-            return results[0]
+            neighbors = {var: len(self.crossword.neighbors(var)) for var in unassigned}
+            sorted_neighbors = sorted(neighbors.items(), key=lambda x: x[1], reverse=True)
+            return sorted_neighbors[0][0]
         
 
     def backtrack(self, assignment):
