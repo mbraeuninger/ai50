@@ -4,6 +4,10 @@ import sys
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 
+import pandas as pd
+from datetime import datetime as dt
+from dateutil import parser
+
 TEST_SIZE = 0.4
 
 
@@ -59,7 +63,23 @@ def load_data(filename):
     labels should be the corresponding list of labels, where each label
     is 1 if Revenue is true, and 0 otherwise.
     """
-    raise NotImplementedError
+    # read data
+    df = pd.read_csv(filename, index_col=False)
+    # convert month, visitor_type, weekend and revenue to int
+    df["Month"] = df["Month"].apply(lambda x: int(dt.strptime(x[0:3],"%b").month)-1)
+    df["VisitorType"] = df["VisitorType"].apply(lambda x: 1 if x == "Returning_Visitor" else 0)
+    df["Weekend"] = df["Weekend"]*1
+    df["Revenue"] = df["Revenue"]*1
+
+    # put evidence in list and labels in list
+    evidence = []
+    labels = []
+    # get all values for each row
+    for r in df.itertuples():
+        evidence.append(r[1:-1]) # skip first value, because it is the index
+        labels.append(r[-1])
+    # return both lists
+    return evidence, labels
 
 
 def train_model(evidence, labels):
@@ -67,7 +87,7 @@ def train_model(evidence, labels):
     Given a list of evidence lists and a list of labels, return a
     fitted k-nearest neighbor model (k=1) trained on the data.
     """
-    raise NotImplementedError
+    return None
 
 
 def evaluate(labels, predictions):
@@ -85,7 +105,7 @@ def evaluate(labels, predictions):
     representing the "true negative rate": the proportion of
     actual negative labels that were accurately identified.
     """
-    raise NotImplementedError
+    return None
 
 
 if __name__ == "__main__":
