@@ -1,4 +1,5 @@
 import math
+import numpy as np
 import random
 import time
 
@@ -86,6 +87,21 @@ class NimAI():
         self.alpha = alpha
         self.epsilon = epsilon
 
+    def available_actions(cls, piles):
+        """
+        Nim.available_actions(piles) takes a `piles` list as input
+        and returns all of the available actions `(i, j)` in that state.
+
+        Action `(i, j)` represents the action of removing `j` items
+        from pile `i` (where piles are 0-indexed).
+        """
+        actions = set()
+        for i, pile in enumerate(piles):
+            for j in range(1, pile + 1):
+                actions.add((i, j))
+        return actions
+
+
     def update(self, old_state, action, new_state, reward):
         """
         Update Q-learning model, given an old state, an action taken
@@ -101,7 +117,14 @@ class NimAI():
         Return the Q-value for the state `state` and the action `action`.
         If no Q-value exists yet in `self.q`, return 0.
         """
-        raise NotImplementedError
+        try:
+            q = self.q.get((tuple(state), action))
+        except: # if there is no self.q
+            q = 0
+        if not q:
+            return 0
+        return q
+
 
     def update_q_value(self, state, action, old_q, reward, future_rewards):
         """
@@ -118,7 +141,10 @@ class NimAI():
         `alpha` is the learning rate, and `new value estimate`
         is the sum of the current reward and estimated future rewards.
         """
-        raise NotImplementedError
+        new_q = old_q + self.alpha * (future_rewards + self.get_q_value(state, action) - reward)
+
+        return new_q
+        
 
     def best_future_reward(self, state):
         """
@@ -130,7 +156,12 @@ class NimAI():
         Q-value in `self.q`. If there are no available actions in
         `state`, return 0.
         """
-        raise NotImplementedError
+        available_actions = self.available_actions(state)
+        if len(available_actions) == 0:
+            return 0
+        action_q_dict = {action: self.get_q_value(action, state) for action in available_actions}
+        return max(action_q_dict.values())
+
 
     def choose_action(self, state, epsilon=True):
         """
@@ -147,8 +178,15 @@ class NimAI():
         If multiple actions have the same Q-value, any of those
         options is an acceptable return value.
         """
-        raise NotImplementedError
-
+        if epsilon:
+            # check if random choice applies
+            if self.epsilon <= random.choice(np.arange(1,101)):
+                return random.choice(list(self.available_actions(state)))
+        # non-random choice
+        available_actions = self.available_actions(state)
+        action_q_dict = {action: self.get_q_value(action, state) for action in available_actions}
+        return max(action_q_dict, key=action_q_dict.get)
+        
 
 def train(n):
     """
