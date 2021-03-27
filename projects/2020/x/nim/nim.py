@@ -159,8 +159,9 @@ class NimAI():
         available_actions = self.available_actions(state)
         if len(available_actions) == 0:
             return 0
-        action_q_dict = {action: self.get_q_value(action, state) for action in available_actions}
-        return max(action_q_dict.values())
+        # get all q values
+        q_values = [self.get_q_value(tuple(state), action) for action in available_actions]
+        return max(q_values)
 
 
     def choose_action(self, state, epsilon=True):
@@ -178,14 +179,16 @@ class NimAI():
         If multiple actions have the same Q-value, any of those
         options is an acceptable return value.
         """
+        best_future_value = self.best_future_reward(state)
         if epsilon:
             # check if random choice applies
             if self.epsilon <= random.choice(np.arange(1,101)):
                 return random.choice(list(self.available_actions(state)))
         # non-random choice
         available_actions = self.available_actions(state)
-        action_q_dict = {action: self.get_q_value(action, state) for action in available_actions}
-        return max(action_q_dict, key=action_q_dict.get)
+        for action in available_actions:
+            if self.get_q_value(state, action) == best_future_value:
+                return action
         
 
 def train(n):
