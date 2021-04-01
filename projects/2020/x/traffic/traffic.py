@@ -21,8 +21,6 @@ def main():
 
     # Get image arrays and labels for all image files
     images, labels = load_data(sys.argv[1])
-    print(f"images: {images[:3]}")
-    print(f"labels: {labels[:3]}")
 
     # Split data into training and testing sets
     labels = tf.keras.utils.to_categorical(labels)
@@ -63,13 +61,11 @@ def load_data(data_dir):
     images = []
     labels = []
     for subdir, dirs, files in os.walk(data_dir):
-        for dir in dirs:
-            for file in files:
-                file = os.path.join(data_dir, file)
-                print(f"Dir is {dir}")
-                print(f"file is {file}")
+        for file in files:
+            file = os.path.join(subdir, file)
+            if file.endswith(".ppm"):
                 # read image to numpy.ndarray
-                image = cv2.imread(file,mode="RGB")
+                image = cv2.imread(file)
                 # convert to RGB
                 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                 # resize image
