@@ -3,3 +3,7 @@ venv/
 .idea
 __pycache__
 test.py
+/gtsrb-small
+/gtsrb
+/projects/2020/x/traffic/gtsrb/
+/projects/2020/x/traffic/gtsrb-small/
