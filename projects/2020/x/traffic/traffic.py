@@ -21,8 +21,6 @@ def main():
 
     # Get image arrays and labels for all image files
     images, labels = load_data(sys.argv[1])
-
-    print(f"labels[0]: {labels[0]}")
     # Split data into training and testing sets
     labels = tf.keras.utils.to_categorical(labels)
     x_train, x_test, y_train, y_test = train_test_split(
@@ -82,7 +80,49 @@ def get_model():
     `input_shape` of the first layer is `(IMG_WIDTH, IMG_HEIGHT, 3)`.
     The output layer should have `NUM_CATEGORIES` units, one for each category.
     """
-    return None
+    model = tf.keras.Sequential([
+        # start with convolution layer
+        tf.keras.layers.Conv2D(
+            32, # number of filters
+            (3,3), # gridsize to be processed
+            activation="relu", # activation function
+            input_shape=(30,30,3) # size of the input
+        ),
+
+        # max pooling layer
+        tf.keras.layers.MaxPooling2D(
+            pool_size=(2,2) # gridsize to be pooled
+        ),
+
+        # flatten units
+        tf.keras.layers.Flatten(),
+
+        # add hidden layers
+        tf.keras.layers.Dense(
+            128, # number of nodes
+            activation="relu"
+        ),
+
+        # add a dropout to avoid overfitting
+        tf.keras.layers.Dropout(
+            0.5 # drop fraction x while calculating to avoid over-relying
+        ),
+
+        # final output layer
+        tf.keras.layers.Dense(
+            3, # number of possible categories (3 for test)
+            activation="softmax"
+        )
+
+    ]
+    )
+    model.compile(
+        optimizer="adam",
+        loss="categorical_crossentropy",
+        metrics=["accuracy"]
+    )
+
+    return model
 
 
 if __name__ == "__main__":
