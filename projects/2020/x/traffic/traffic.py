@@ -85,7 +85,7 @@ def get_model():
         tf.keras.layers.Conv2D(
             32, # number of filters
             (3,3), # gridsize to be processed
-            activation="relu", # activation function
+            activation="sigmoid", # activation function
             input_shape=(30,30,3) # size of the input
         ),
 
@@ -99,8 +99,8 @@ def get_model():
 
         # add hidden layers
         tf.keras.layers.Dense(
-            128, # number of nodes
-            activation="relu"
+            256, # number of nodes
+            activation="sigmoid"
         ),
 
         # add a dropout to avoid overfitting
@@ -110,8 +110,8 @@ def get_model():
 
         # final output layer
         tf.keras.layers.Dense(
-            3, # number of possible categories (3 for test)
-            activation="softmax"
+            43, # number of possible categories (3 for test)
+            activation="sigmoid"
         )
 
     ]
