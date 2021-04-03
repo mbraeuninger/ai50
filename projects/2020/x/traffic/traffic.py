@@ -111,7 +111,7 @@ def get_model():
         # final output layer
         tf.keras.layers.Dense(
             43, # number of possible categories (3 for test)
-            activation="sigmoid"
+            activation="softmax"
         )
 
     ]
