@@ -48,7 +48,7 @@ Accuracy: 0.0570
 Loss: 3.4928  
 Quadrupling the poolsize slighlty improves the results, but I would not classify the change as significant. Similar to the number of filters it does not seem to influence the outcome as long as other parameters are not changed.
 ## Change the dropout
-### 0.25
+### 0.75
 Accuracy: 0.0547  
 Loss: 3.4985  
 Decreasing the dependency on single nodes by increasing the dropout has almost no influence on the final result. That tells us that the algorithm is not overfitting, but as long as other parameters are badly adjusted the results remains bad.
