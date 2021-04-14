@@ -78,7 +78,13 @@ def np_chunk(tree):
     whose label is "NP" that does not itself contain any other
     noun phrases as subtrees.
     """
+    parent_tree = nltk.tree.ParentedTree.convert(tree)
 
+    chunks = []
+    # find all trees that do contain single Nouns
+    for tree in parent_tree.subtrees(lambda x: x.label() == "N"):
+        chunks.append(tree.parent())
+    return chunks
 
 
 if __name__ == "__main__":
