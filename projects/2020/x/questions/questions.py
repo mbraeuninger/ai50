@@ -1,3 +1,4 @@
+from numpy.core.fromnumeric import sort
 import nltk
 import sys
 import os
@@ -123,7 +124,20 @@ def top_files(query, files, idfs, n):
     to their IDF values), return a list of the filenames of the the `n` top
     files that match the query, ranked according to tf-idf.
     """
-    raise NotImplementedError
+    result_dict = {}
+    # iterate over files
+    for file, words in files.items():
+        result_dict[file] = 0.0
+        # iterate over unique words in file
+        for word in query:
+            # calculate tf-idf
+            tfidf = idfs[word] * words.count(word)
+            result_dict[file] += tfidf
+    
+    # sort results by tf-idf and convert to list
+    tuple_list_sorted = sorted(result_dict.items(), key=lambda x: x[1], reverse=True)
+    result_list_sorted = [el[0] for el in tuple_list_sorted]
+    return result_list_sorted[:n]
 
 
 def top_sentences(query, sentences, idfs, n):
