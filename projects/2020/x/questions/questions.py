@@ -91,11 +91,7 @@ def compute_idfs(documents):
     # get all unique words in all documents
     unique_words = []
     for words in documents.values():
-        if not unique_words:
-            unique_words = words
-        else:
-            temp = [word for word in words if word not in unique_words]
-            unique_words.extend(temp)
+        unique_words.extend(words)
     
     # get number of documents
     docs = len(documents)
