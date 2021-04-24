@@ -1,3 +1,4 @@
+from numpy import result_type
 from numpy.core.fromnumeric import sort
 import nltk
 import sys
@@ -72,12 +73,10 @@ def tokenize(document):
     """
     tokens = []
     for word in nltk.word_tokenize(document):
-        for char in word:
-            if char in string.punctuation:
-                word = word.replace(char, "")
-        word = word.lower()
-        if word not in nltk.corpus.stopwords.words("english"):
-            tokens.append(word)
+        if not all([char in string.punctuation for char in word]):
+            word = word.lower()
+            if word not in nltk.corpus.stopwords.words("english"):
+                tokens.append(word)
     return tokens
 
 
@@ -99,7 +98,7 @@ def compute_idfs(documents):
             unique_words.extend(temp)
     
     # get number of documents
-    docs = len(documents.keys())
+    docs = len(documents)
 
     # create dict for output mapping of words to their respective IDF values
     idf_dict = {}
@@ -148,7 +147,24 @@ def top_sentences(query, sentences, idfs, n):
     the query, ranked according to idf. If there are ties, preference should
     be given to sentences that have a higher query term density.
     """
-    raise NotImplementedError
+    result_dict = {}
+    # iterate over files
+    for sentence, words in sentences.items():
+        result_dict[sentence] = {}
+        result_dict[sentence]["idf"] = 0.0
+        # iterate over words in sentence
+        for word in query:
+            if word in words and word in idfs.keys():
+                # calculate idf
+                result_dict[sentence]["idf"] += idfs[word]
+        # get query-term-density
+        qtd = sum([1 for el in query if el in words]) / len(words)
+        result_dict[sentence]["qtd"] = qtd
+
+    # sort results by idf and qtd and convert to list
+    tuple_list_sorted = sorted(result_dict.items(), key=lambda x: (x[1]["idf"], x[1]["qtd"]), reverse=True)
+    result_list_sorted = [el[0] for el in tuple_list_sorted]
+    return result_list_sorted[:n]
 
 
 if __name__ == "__main__":
