@@ -155,7 +155,7 @@ jupyter-client==5.2.4
 jupyter-console==6.0.0
 jupyter-core==4.4.0
 jupyter-telemetry==0.0.5
-jupyterhub==1.1.0
+jupyterhub==1.5.0
 Keras-Preprocessing==1.1.2
 kiwisolver==1.0.1
 kombu==4.2.0
