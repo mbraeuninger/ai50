@@ -206,7 +206,7 @@ pep562==1.0
 pep8==1.7.1
 pexpect==4.7.0
 pickleshare==0.7.5
-Pillow==8.1.0
+Pillow==9.3.0
 pluggy==0.6.0
 ply==3.8
 progressbar2==3.42.0
